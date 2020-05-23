@@ -1,15 +1,14 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useReducer, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
 import { bool } from 'prop-types';
 
-import RegistrationForm from '../containers/RegistrationForm';
+import Registration from '../containers/RegistrationForm';
 import PrivateRoute from './PrivateRoute';
+import userReduceer from '../../state/reducers';
 
-const propTypes = {
-  hasToken: bool.isRequired,
-};
+const propTypes = {};
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -32,9 +31,9 @@ export const Test = () => {
 };
 
 const App = () => {
-  const [user, updateUser] = useState({ token: null });
+  const [user, userDispatch] = useReducer(userReduceer, { token: null });
   return (
-    <Context.Provider value={{ user, updateUser }}>
+    <Context.Provider value={{ user, userDispatch }}>
       <Context.Consumer>
         {props => (
           <>
@@ -43,7 +42,7 @@ const App = () => {
               <Switch>
                 <PrivateRoute path="/test" component={Test} hasToken={user.token} />
                 <Route path="/">
-                  <RegistrationForm />
+                  <Registration />
                 </Route>
               </Switch>
             </Router>

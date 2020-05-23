@@ -4,10 +4,10 @@ import { Route, Redirect } from 'react-router-dom';
 
 const propTypes = {
   Component: oneOfType([array, node, string, func, element]),
-  hasToken: bool.isRequired,
+  hasToken: bool,
 };
 
-const PrivateRoute = ({ component: Component, hasToken, ...rest }) => (
+const PrivateRoute = ({ component: Component, hasToken = false, ...rest }) => (
   <Route
     {...rest}
     render={props => {

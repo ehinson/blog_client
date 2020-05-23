@@ -10,13 +10,7 @@ import 'regenerator-runtime';
 
 import InputField from './InputField';
 
-const propTypes = {
-  handleSubmit: func.isRequired,
-  pristine: bool.isRequired,
-  reset: func.isRequired,
-  submitting: bool.isRequired,
-  fetchRepos: func.isRequired,
-};
+const propTypes = {};
 
 const StyledFormWrapper = styled(Form)`
   display: flex;
@@ -35,10 +29,9 @@ const StyledButton = styled.button`
   padding: 10px 15px;
 `;
 
-const RegistrationForm = props => {
-  const { handleSubmit, pristine, reset, submitting, fetchRepos } = props;
+const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
   return (
-    <StyledFormWrapper onSubmit={props => console.log(props)}>
+    <StyledFormWrapper>
       <Field
         name="username"
         type="text"
@@ -48,6 +41,14 @@ const RegistrationForm = props => {
         validate={[required({ msg: 'A username is required.' })]}
       />
       <Field
+        name="email"
+        type="email"
+        component={InputField}
+        placeholder="email"
+        label="Please enter a email"
+        validate={[required({ msg: 'An email is required.' })]}
+      />
+      <Field
         name="password"
         type="password"
         component={InputField}
@@ -55,13 +56,17 @@ const RegistrationForm = props => {
         label="Please enter a password"
         validate={[required({ msg: 'A password is required.' })]}
       />
+      <Field
+        name="password2"
+        type="password"
+        component={InputField}
+        placeholder="password again"
+        label="Please enter a password"
+        validate={[required({ msg: 'A password is required.' })]}
+      />
       <div>
-        <StyledButton type="submit" disabled={submitting}>
-          Submit API Key
-        </StyledButton>
-        <StyledButton type="button" disabled={pristine || submitting} onClick={reset}>
-          Clear Values
-        </StyledButton>
+        <StyledButton type="submit">Submit</StyledButton>
+        <StyledButton type="reset">Clear Values</StyledButton>
       </div>
     </StyledFormWrapper>
   );

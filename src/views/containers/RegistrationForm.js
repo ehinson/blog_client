@@ -1,12 +1,13 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import RegistrationForm from '../components/Form/RegistrationForm';
+import { postUser } from '../../state/operations';
 
 const Registration = () => (
   <div>
     <h1>Any place in your app!</h1>
     <Formik
-      initialValues={{ username: '', email: '', password: '', password_confirmation: '' }}
+      initialValues={{ username: '', email: '', password: '', password2: '' }}
       validate={values => {
         const errors = {};
         if (!values.email) {
@@ -18,6 +19,7 @@ const Registration = () => (
       }}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
+          postUser(values);
           console.log(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);
