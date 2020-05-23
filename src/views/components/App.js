@@ -6,7 +6,8 @@ import { bool } from 'prop-types';
 
 import Registration from '../containers/RegistrationForm';
 import PrivateRoute from './PrivateRoute';
-import userReduceer from '../../state/reducers';
+import { userReducer } from '../../state/reducers';
+import { initialState } from '../../state';
 
 const propTypes = {};
 
@@ -18,38 +19,35 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-family: 'Montserrat', sans-serif;
     display: flex;
+    height: 100%;
     min-height: 100vh;
     flex-direction: column;
     position: relative;
   }
 `;
 
-const Context = createContext();
+export const UserContext = createContext();
 
 export const Test = () => {
   return <div>Test</div>;
 };
 
 const App = () => {
-  const [user, userDispatch] = useReducer(userReduceer, { token: null });
+  const [user, userDispatch] = useReducer(userReducer, initialState.user);
   return (
-    <Context.Provider value={{ user, userDispatch }}>
-      <Context.Consumer>
-        {props => (
-          <>
-            <GlobalStyle />
-            <Router>
-              <Switch>
-                <PrivateRoute path="/test" component={Test} hasToken={user.token} />
-                <Route path="/">
-                  <Registration />
-                </Route>
-              </Switch>
-            </Router>
-          </>
-        )}
-      </Context.Consumer>
-    </Context.Provider>
+    <UserContext.Provider value={{ user, userDispatch }}>
+      <>
+        <GlobalStyle />
+        <Router>
+          <Switch>
+            <PrivateRoute path="/test" component={Test} />
+            <Route path="/">
+              <Registration userDispatch={userDispatch} />
+            </Route>
+          </Switch>
+        </Router>
+      </>
+    </UserContext.Provider>
   );
 };
 

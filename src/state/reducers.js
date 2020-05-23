@@ -1,17 +1,13 @@
-import React, {useReducer} from "react"
+import React from 'react';
 
-userReducer(state, action) {
-  switch(action.type) {
-    case 'updateValue':
+export const userReducer = (state, action) => {
+  switch (action.type) {
+    case 'update':
       return {
         ...state,
-        value: action.payload
-      }
+        value: action.payload,
+      };
     default:
-      return state
+      return state;
   }
-}
-
-export default userReducer
-
-
+};

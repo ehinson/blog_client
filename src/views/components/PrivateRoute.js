@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { array, node, oneOfType, string, bool, func, element } from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
+import { UserContext } from '../components/App';
 
 const propTypes = {
-  Component: oneOfType([array, node, string, func, element]),
+  component: oneOfType([array, node, string, func, element]),
   hasToken: bool,
 };
 
-const PrivateRoute = ({ component: Component, hasToken = false, ...rest }) => (
-  <Route
-    {...rest}
-    render={props => {
-      return hasToken ? <Component {...props} /> : <Redirect to="/" />;
-    }}
-  />
-);
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const { user } = useContext(UserContext);
+
+  return (
+    <Route
+      {...rest}
+      render={props => {
+        return user ? <Component {...props} /> : <Redirect to="/" />;
+      }}
+    />
+  );
+};
 
 PrivateRoute.propTypes = propTypes;
 
