@@ -29,18 +29,19 @@ const StyledError = styled.strong`
   display: inline-block;
 `;
 
-const Input = ({ input, label, type, meta: { touched, error }, placeholder }) => (
+const Input = ({ field, form, meta: { error, touched }, label, type, placeholder, ...props }) => (
   <div>
     <StyledLabel>{label}</StyledLabel>
     <div>
-      <StyledInput {...input} placeholder={placeholder} type={type} />
+      <StyledInput {...field} placeholder={placeholder} type={type} />
       {touched && error && <StyledError>{error}</StyledError>}
     </div>
   </div>
 );
 
 Input.propTypes = {
-  input: object.isRequired,
+  field: object.isRequired,
+  form: object.isRequired,
   label: oneOfType([string, node]),
   type: string.isRequired,
   meta: object.isRequired,

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Field } from 'redux-form';
+// import { Field } from 'redux-form';
+import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import { required } from 'redux-form-validators';
@@ -17,7 +18,7 @@ const propTypes = {
   fetchRepos: func.isRequired,
 };
 
-const StyledFormWrapper = styled.form`
+const StyledFormWrapper = styled(Form)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,17 +35,25 @@ const StyledButton = styled.button`
   padding: 10px 15px;
 `;
 
-const TokenForm = props => {
+const RegistrationForm = props => {
   const { handleSubmit, pristine, reset, submitting, fetchRepos } = props;
   return (
-    <StyledFormWrapper onSubmit={handleSubmit(fetchRepos)}>
+    <StyledFormWrapper onSubmit={props => console.log(props)}>
       <Field
-        name="token"
+        name="username"
         type="text"
         component={InputField}
-        placeholder="token"
-        label="Please enter your Github Token"
-        validate={[required({ msg: 'A token is required.' })]}
+        placeholder="username"
+        label="Please enter a username"
+        validate={[required({ msg: 'A username is required.' })]}
+      />
+      <Field
+        name="password"
+        type="password"
+        component={InputField}
+        placeholder="password"
+        label="Please enter a password"
+        validate={[required({ msg: 'A password is required.' })]}
       />
       <div>
         <StyledButton type="submit" disabled={submitting}>
@@ -58,6 +67,6 @@ const TokenForm = props => {
   );
 };
 
-TokenForm.propTypes = propTypes;
+RegistrationForm.propTypes = propTypes;
 
-export default TokenForm;
+export default RegistrationForm;

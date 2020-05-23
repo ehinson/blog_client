@@ -4,11 +4,30 @@ import _ from 'lodash';
 import * as repoActions from './actions';
 import * as repoSelectors from './selectors';
 
+
+export const fetchToken = (values, history) => async (dispatch, getState) => {
+  try {
+    dispatch(repoActions.setToken(values.token));
+
+    const { data } = await axios.get(`/api/tokens`, {
+      headers: {
+        Authorization: `${user.token}`,
+      },
+    });
+    dispatch(repoActions.setRepos(data));
+    history.push('/prioritize', { hasToken: true });
+    window.localStorage.setItem('userToken', values.token);
+  } catch (error) {
+    console.error(error);
+    history.push('/');
+  }
+};
+
 export const fetchRepos = (values, history) => async (dispatch, getState) => {
   try {
     dispatch(repoActions.setToken(values.token));
 
-    const { data } = await axios.get(`https://api.github.com/user/repos?per_page=25`, {
+    const { data } = await axios.get(`/api/tokens`, {
       headers: {
         Authorization: `Bearer ${values.token}`,
       },

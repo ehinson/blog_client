@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
 import { bool } from 'prop-types';
 
-import TokenForm from '../containers/TokenForm';
-import Prioritization from '../containers/PrioritizationInterface';
+import RegistrationForm from '../containers/RegistrationForm';
 import PrivateRoute from './PrivateRoute';
 
 const propTypes = {
@@ -26,19 +25,32 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const App = ({ hasToken }) => {
+const Context = createContext();
+
+export const Test = () => {
+  return <div>Test</div>;
+};
+
+const App = () => {
+  const [user, updateUser] = useState({ token: null });
   return (
-    <>
-      <GlobalStyle />
-      <Router>
-        <Switch>
-          <PrivateRoute path="/prioritize" component={Prioritization} hasToken={hasToken} />
-          <Route path="/">
-            <TokenForm />
-          </Route>
-        </Switch>
-      </Router>
-    </>
+    <Context.Provider value={{ user, updateUser }}>
+      <Context.Consumer>
+        {props => (
+          <>
+            <GlobalStyle />
+            <Router>
+              <Switch>
+                <PrivateRoute path="/test" component={Test} hasToken={user.token} />
+                <Route path="/">
+                  <RegistrationForm />
+                </Route>
+              </Switch>
+            </Router>
+          </>
+        )}
+      </Context.Consumer>
+    </Context.Provider>
   );
 };
 
