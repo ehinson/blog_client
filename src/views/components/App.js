@@ -9,6 +9,8 @@ import Login from '../containers/Login';
 import PrivateRoute from './PrivateRoute';
 import { userReducer, authReducer } from '../../state/reducers';
 import { initialState } from '../../state';
+import { useLocalStorage } from '../../state/hooks/useLocalStorage';
+import PostForm from './Form/PostForm';
 
 const propTypes = {};
 
@@ -31,12 +33,17 @@ export const UserContext = createContext();
 export const AuthContext = createContext();
 
 export const Test = () => {
-  return <div>Test</div>;
+  return (
+    <div>
+      Test
+      <PostForm />
+    </div>
+  );
 };
 
 const App = () => {
   const [user, userDispatch] = useReducer(userReducer, initialState.user);
-  const [auth, authDispatch] = useReducer(authReducer, initialState.auth);
+  const [auth, authDispatch] = useLocalStorage('auth', authReducer, initialState.auth);
 
   return (
     <AuthContext.Provider value={{ auth, authDispatch }}>

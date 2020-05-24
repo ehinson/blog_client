@@ -32,8 +32,33 @@ export const loginUser = async (values, authDispatch, history) => {
         password,
       },
     });
-    console.log(token);
+    window.localStorage.setItem('auth', JSON.stringify({ authenticated: !!token, token }));
     authDispatch({ type: 'update', payload: { authenticated: !!token, token } });
+    history.push('/');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createPost = async (values, auth, history) => {
+  console.log('this is called with: ', values, auth);
+
+  try {
+    const {
+      data: { token },
+    } = await axios.post(
+      `/api/posts`,
+      {
+        title: values.title,
+        body: values.body,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      },
+    );
+    // auDispatch({ type: 'update', payload: { authenticated: !!token, token } });
     history.push('/');
   } catch (error) {
     console.log(error);
