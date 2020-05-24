@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { required } from 'redux-form-validators';
 import React, { useContext } from 'react';
 import { createPost } from '../../../state/operations';
-import { UserContext, AuthContext } from '../../components/App';
+import { UserContext, AuthContext, PostsContext } from '../../components/App';
 import { useHistory } from 'react-router-dom';
 
 import 'core-js';
@@ -35,13 +35,14 @@ const StyledButton = styled.button`
 const PostForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
   const { auth, authDispatch } = useContext(AuthContext);
+  const { posts, postsDispatch } = useContext(PostsContext);
   const history = useHistory();
   return (
     <Formik
       initialValues={{ title: '', body: '' }}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          createPost(values, auth, history);
+          createPost(values, auth, postsDispatch, history);
           console.log(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);

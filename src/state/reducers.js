@@ -23,3 +23,14 @@ export const authReducer = (state, action) => {
       return state;
   }
 };
+
+export const postsReducer = (state, action) => {
+  switch (action.type) {
+    case 'set':
+      return [...state, ...action.payload];
+    case 'update':
+      return [...state, ...action.payload];
+    default:
+      return state;
+  }
+};

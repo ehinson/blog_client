@@ -40,13 +40,11 @@ export const loginUser = async (values, authDispatch, history) => {
   }
 };
 
-export const createPost = async (values, auth, history) => {
+export const createPost = async (values, auth, postsDispatch, history) => {
   console.log('this is called with: ', values, auth);
 
   try {
-    const {
-      data: { token },
-    } = await axios.post(
+    const { data: post } = await axios.post(
       `/api/posts`,
       {
         title: values.title,
@@ -58,8 +56,9 @@ export const createPost = async (values, auth, history) => {
         },
       },
     );
-    // auDispatch({ type: 'update', payload: { authenticated: !!token, token } });
-    history.push('/');
+    console.log('data', post);
+    postsDispatch({ type: 'set', payload: [{ post }] });
+    history.push(`/posts/${post.id}`);
   } catch (error) {
     console.log(error);
   }
