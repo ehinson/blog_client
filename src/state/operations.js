@@ -11,7 +11,7 @@ export const registerUser = async (values, userDispatch, history) => {
       password,
     });
     console.log(user);
-    userDispatch({ type: 'update', payload: user }); // transform user here
+    userDispatch(user); // transform user here
 
     history.push('/login');
   } catch (error) {
@@ -21,28 +21,47 @@ export const registerUser = async (values, userDispatch, history) => {
 
 export const loginUser = async (values, authDispatch, history) => {
   const { username, password } = values;
-  console.log('this is called with: ', values);
 
   try {
     const {
       data: { token },
-    } = await axios.post(`/api/tokens`, {
-      auth: {
-        username,
-        password,
+    } = await axios.post(
+      `/api/tokens`,
+      {},
+      {
+        auth: {
+          username,
+          password,
+        },
       },
-    });
+    );
     window.localStorage.setItem('auth', JSON.stringify({ authenticated: !!token, token }));
-    authDispatch({ type: 'update', payload: { authenticated: !!token, token } });
+    authDispatch(token);
     history.push('/');
   } catch (error) {
     console.log(error);
   }
 };
 
-export const createPost = async (values, auth, postsDispatch, history) => {
-  console.log('this is called with: ', values, auth);
+export const logoutUser = async (auth, authDispatch) => {
+  try {
+    const { data } = await axios.delete(
+      `/api/tokens`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      },
+    );
+    window.localStorage.setItem('auth', JSON.stringify({ authenticated: false, token: null }));
+    authDispatch();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+export const createPost = async (values, auth, postsDispatch, history) => {
   try {
     const { data: post } = await axios.post(
       `/api/posts`,
@@ -57,8 +76,22 @@ export const createPost = async (values, auth, postsDispatch, history) => {
       },
     );
     console.log('data', post);
-    postsDispatch({ type: 'set', payload: [{ post }] });
-    history.push(`/posts/${post.id}`);
+    postsDispatch(post);
+    history.push(`/users/${post.author_id}/posts/${post.id}`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchPost = async (auth, postID, postsDispatch, history) => {
+  try {
+    const { data: post } = await axios.get(`/api/posts/${postID}`, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
+    console.log('data', post);
+    postsDispatch(post);
   } catch (error) {
     console.log(error);
   }

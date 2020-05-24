@@ -32,7 +32,7 @@ const StyledButton = styled.button`
 
 const LoginForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
-  const { auth, authDispatch } = useContext(AuthContext);
+  const { auth, handleLogin } = useContext(AuthContext);
   const history = useHistory();
   return (
     <Formik
@@ -41,7 +41,7 @@ const LoginForm = ({ isSubmitting, handleSubmit }) => {
         console.log(values);
         setTimeout(() => {
           console.log(JSON.stringify(values, null, 2));
-          loginUser(values, authDispatch, history);
+          loginUser(values, handleLogin, history);
 
           setSubmitting(false);
         }, 400);

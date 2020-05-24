@@ -12,6 +12,12 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  resolve: {
+    alias: {
+      state: path.resolve(__dirname, 'src/state/'),
+      views: path.resolve(__dirname, 'src/views/'),
+    },
+  },
   devtool: 'inline-source-map',
   module: {
     rules: [

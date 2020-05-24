@@ -35,14 +35,14 @@ const StyledButton = styled.button`
 const PostForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
   const { auth, authDispatch } = useContext(AuthContext);
-  const { posts, postsDispatch } = useContext(PostsContext);
+  const { posts, handleAddPost } = useContext(PostsContext);
   const history = useHistory();
   return (
     <Formik
       initialValues={{ title: '', body: '' }}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          createPost(values, auth, postsDispatch, history);
+          createPost(values, auth, handleAddPost, history);
           console.log(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);

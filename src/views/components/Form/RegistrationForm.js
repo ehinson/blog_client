@@ -32,7 +32,7 @@ const StyledButton = styled.button`
 `;
 
 const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
-  const { user, userDispatch } = useContext(UserContext);
+  const { user, handleRegister } = useContext(UserContext);
   const { auth, authDispatch } = useContext(AuthContext);
   const history = useHistory();
   return (
@@ -49,7 +49,7 @@ const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
       }}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          registerUser(values, userDispatch, history);
+          registerUser(values, handleRegister, history);
           console.log(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);

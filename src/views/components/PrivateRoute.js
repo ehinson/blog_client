@@ -11,6 +11,7 @@ const propTypes = {
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { user } = useContext(UserContext);
   const { auth } = useContext(AuthContext);
+  console.log(auth);
 
   return (
     <Route

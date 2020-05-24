@@ -5,6 +5,13 @@ export const userReducer = (state, action) => {
     case 'update':
       return {
         ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+    case 'register':
+      return {
         data: action.payload,
       };
     default:
@@ -14,7 +21,12 @@ export const userReducer = (state, action) => {
 
 export const authReducer = (state, action) => {
   switch (action.type) {
-    case 'update':
+    case 'login':
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case 'logout':
       return {
         ...state,
         ...action.payload,
@@ -26,10 +38,14 @@ export const authReducer = (state, action) => {
 
 export const postsReducer = (state, action) => {
   switch (action.type) {
-    case 'set':
-      return [...state, ...action.payload];
-    case 'update':
-      return [...state, ...action.payload];
+    case 'createPost':
+      return { ...action.payload };
+    case 'updatePost':
+      return { ...state, ...action.payload };
+    case 'createPosts':
+      return [state, action.payload];
+    case 'updatePosts':
+      return [state, action.payload];
     default:
       return state;
   }

@@ -1,17 +1,29 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-let { topicId } = useParams();
-
+import { useParams, useHistory } from 'react-router-dom';
+import { fetchPost } from '../../../state/operations';
 
 import { UserContext, AuthContext, PostsContext } from '../../components/App';
 
 const Post = props => {
-  const { posts, postsDispatch } = useContext(PostsContext);
+  const { posts, handleFetchPost } = useContext(PostsContext);
+  const { auth, authDispatch } = useContext(AuthContext);
+
+  let { id, post_id } = useParams();
+  const history = useHistory();
+  console.log(posts, id, post_id);
+
+  useEffect(() => {
+    fetchPost(auth, post_id, handleFetchPost, history);
+  }, [auth, handleFetchPost, history, post_id]);
+
   return (
     <div>
       Post
-      {posts[0].post.title}
-      {posts[0].post.body}
+      <br />
+      {posts.post.title}
+      <br />
+      {posts.post.body}
     </div>
   );
 };
