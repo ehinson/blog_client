@@ -22,6 +22,8 @@ import { useLocalStorage } from '../../state/hooks/useLocalStorage';
 import PostForm from './Form/PostForm';
 import Posts from './Posts/Posts';
 import Post from './Posts/Post';
+import Users from './Users/Users';
+import User from './Users/User';
 
 const propTypes = {};
 
@@ -56,23 +58,11 @@ export const NotFound = () => {
   return <div>NotFound</div>;
 };
 
-export const User = () => {
-  return <div>User</div>;
-};
-
-export const Users = () => {
-  let { url } = useRouteMatch();
-  let { id } = useParams();
-  return (
-    <div>
-      Users
-      {console.log(url, id)}
-    </div>
-  );
-};
-
 const App = () => {
-  const [user, userDispatch] = useReducer(userReducer, initialState.user);
+  const [user, userDispatch] = useReducer(userReducer, {
+    ...initialState.users,
+    ...initialState.user,
+  });
   const [posts, postsDispatch] = useReducer(postsReducer, {
     ...initialState.posts,
     ...initialState.post,
@@ -94,12 +84,23 @@ const App = () => {
     post => postsDispatch({ type: 'updatePost', payload: { post } }),
     [],
   );
+  const handleFetchUser = useCallback(
+    user => userDispatch({ type: 'updateUser', payload: { user } }),
+    [],
+  );
   const handleFetchUserPosts = posts => postsDispatch({ type: 'updatePosts', payload: { posts } });
-  const handleFetchPosts = posts => postsDispatch({ type: 'updatePosts', payload: { posts } });
+  const handleFetchPosts = useCallback(
+    posts => postsDispatch({ type: 'updatePosts', payload: { posts } }),
+    [],
+  );
+  const handleFetchUsers = useCallback(
+    users => userDispatch({ type: 'updateUsers', payload: { users } }),
+    [],
+  );
 
   return (
     <AuthContext.Provider value={{ auth, handleLogin, handleLogout }}>
-      <UserContext.Provider value={{ user, handleRegister }}>
+      <UserContext.Provider value={{ user, handleRegister, handleFetchUser, handleFetchUsers }}>
         <PostsContext.Provider
           value={{
             posts,
@@ -126,9 +127,9 @@ const App = () => {
                   <Login />
                 </Route>
                 <Route path="/users/:id/posts/:post_id" component={Post} />
-                <Route exact path="/users/" component={Users} />
-                <Route path="/users/:id/" component={User} />
                 <Route path="/users/:id/posts/" component={Posts} />
+                <Route path="/users/:id/" component={User} />
+                <Route exact path="/users/" component={Users} />
                 <Route path="*" component={NotFound} />
               </Switch>
             </Router>

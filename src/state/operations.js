@@ -83,9 +83,51 @@ export const createPost = async (values, auth, postsDispatch, history) => {
   }
 };
 
+export const fetchUser = async (auth, postID, usersDispatch, history) => {
+  try {
+    const { data: user } = await axios.get(`/api/users/${postID}`, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
+    console.log('user', user);
+    usersDispatch(user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchUsers = async (auth, usersDispatch, history) => {
+  try {
+    const { data: users } = await axios.get(`/api/users`, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
+    console.log('users', users);
+    usersDispatch(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const fetchPost = async (auth, postID, postsDispatch, history) => {
   try {
     const { data: post } = await axios.get(`/api/posts/${postID}`, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
+    console.log('data', post);
+    postsDispatch(post);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchPosts = async (auth, postID, postsDispatch, history) => {
+  try {
+    const { data: post } = await axios.get(`/api/posts`, {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },

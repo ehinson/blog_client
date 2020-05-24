@@ -21,9 +21,9 @@ const Post = props => {
     <div>
       Post
       <br />
-      {posts.post.title}
+      {posts.post && posts.post.title}
       <br />
-      {posts.post.body}
+      {posts.post && posts.post.body}
     </div>
   );
 };
