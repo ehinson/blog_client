@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { array, node, oneOfType, string, bool, func, element } from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
-import { UserContext } from '../components/App';
+import { UserContext, AuthContext } from '../components/App';
 
 const propTypes = {
   component: oneOfType([array, node, string, func, element]),
@@ -10,12 +10,22 @@ const propTypes = {
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { user } = useContext(UserContext);
+  const { auth } = useContext(AuthContext);
 
   return (
     <Route
       {...rest}
       render={props => {
-        return user ? <Component {...props} /> : <Redirect to="/" />;
+        return auth.token ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: { from: props.location },
+            }}
+          />
+        );
       }}
     />
   );

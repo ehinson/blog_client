@@ -1,9 +1,8 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
-import { required } from 'redux-form-validators';
 import React, { useContext } from 'react';
-import { registerUser } from '../../../state/operations';
+import { loginUser } from '../../../state/operations';
 import { UserContext, AuthContext } from '../../components/App';
 import { useHistory } from 'react-router-dom';
 
@@ -31,26 +30,19 @@ const StyledButton = styled.button`
   padding: 10px 15px;
 `;
 
-const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
+const LoginForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
   const { auth, authDispatch } = useContext(AuthContext);
   const history = useHistory();
   return (
     <Formik
-      initialValues={{ username: '', email: '', password: '', password2: '' }}
-      validate={values => {
-        const errors = {};
-        if (!values.email) {
-          errors.email = 'Required';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-          errors.email = 'Invalid email address';
-        }
-        return errors;
-      }}
+      initialValues={{ username: '', password: '' }}
       onSubmit={(values, { setSubmitting }) => {
+        console.log(values);
         setTimeout(() => {
-          registerUser(values, userDispatch, history);
           console.log(JSON.stringify(values, null, 2));
+          loginUser(values, authDispatch, history);
+
           setSubmitting(false);
         }, 400);
       }}
@@ -65,24 +57,10 @@ const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
             label="Please enter a username"
           />
           <Field
-            name="email"
-            type="email"
-            component={InputField}
-            placeholder="email"
-            label="Please enter a email"
-          />
-          <Field
             name="password"
             type="password"
             component={InputField}
             placeholder="password"
-            label="Please enter a password"
-          />
-          <Field
-            name="password2"
-            type="password"
-            component={InputField}
-            placeholder="password again"
             label="Please enter a password"
           />
           <div>
@@ -95,6 +73,6 @@ const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
   );
 };
 
-RegistrationForm.propTypes = propTypes;
+LoginForm.propTypes = propTypes;
 
-export default RegistrationForm;
+export default LoginForm;

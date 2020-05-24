@@ -5,7 +5,19 @@ export const userReducer = (state, action) => {
     case 'update':
       return {
         ...state,
-        value: action.payload,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const authReducer = (state, action) => {
+  switch (action.type) {
+    case 'update':
+      return {
+        ...state,
+        ...action.payload,
       };
     default:
       return state;

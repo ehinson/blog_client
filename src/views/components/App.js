@@ -4,9 +4,10 @@ import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
 import { bool } from 'prop-types';
 
-import Registration from '../containers/RegistrationForm';
+import Registration from '../containers/Registration';
+import Login from '../containers/Login';
 import PrivateRoute from './PrivateRoute';
-import { userReducer } from '../../state/reducers';
+import { userReducer, authReducer } from '../../state/reducers';
 import { initialState } from '../../state';
 
 const propTypes = {};
@@ -27,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export const UserContext = createContext();
+export const AuthContext = createContext();
 
 export const Test = () => {
   return <div>Test</div>;
@@ -34,20 +36,27 @@ export const Test = () => {
 
 const App = () => {
   const [user, userDispatch] = useReducer(userReducer, initialState.user);
+  const [auth, authDispatch] = useReducer(authReducer, initialState.auth);
+
   return (
-    <UserContext.Provider value={{ user, userDispatch }}>
-      <>
-        <GlobalStyle />
-        <Router>
-          <Switch>
-            <PrivateRoute path="/test" component={Test} />
-            <Route path="/">
-              <Registration userDispatch={userDispatch} />
-            </Route>
-          </Switch>
-        </Router>
-      </>
-    </UserContext.Provider>
+    <AuthContext.Provider value={{ auth, authDispatch }}>
+      <UserContext.Provider value={{ user, userDispatch }}>
+        <>
+          <GlobalStyle />
+          <Router>
+            <Switch>
+              <Route path="/register">
+                <Registration />
+              </Route>
+              <Route path="/login">
+                <Login />
+              </Route>
+              <PrivateRoute exact path="/" component={Test} />
+            </Switch>
+          </Router>
+        </>
+      </UserContext.Provider>
+    </AuthContext.Provider>
   );
 };
 

@@ -4,7 +4,10 @@ export const initialState = {
   user: null,
   messages: null,
   auth: {
-    user: null, // maybe delete .auth
-    token: null, // for API requests
+    authenticated: null,
+    token: null,
+    login: null,
+    logout: null,
   },
 };
+// add to localstorage
