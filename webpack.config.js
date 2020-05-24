@@ -10,7 +10,8 @@ module.exports = {
   mode: 'development',
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
+    publicPath: '/',
   },
   resolve: {
     alias: {
@@ -46,15 +47,17 @@ module.exports = {
   },
   plugins: [
     new Dotenv(),
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({
+      dry: true,
+      cleanAfterEveryBuildPatterns: ['**/*', '!index.html'],
+    }),
     new ManifestPlugin(),
     new HtmlWebpackPlugin({
-      title: 'React and Webpack Starter',
       template: path.join(__dirname, 'src/index.html'),
     }),
   ],
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, '../dist'),
     compress: true,
     port: 3000,
     watchContentBase: true,

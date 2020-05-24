@@ -52,6 +52,9 @@ export const Test = () => {
     </div>
   );
 };
+export const NotFound = () => {
+  return <div>NotFound</div>;
+};
 
 export const User = () => {
   return <div>User</div>;
@@ -122,10 +125,11 @@ const App = () => {
                 <Route path="/login">
                   <Login />
                 </Route>
+                <Route path="/users/:id/posts/:post_id" component={Post} />
                 <Route exact path="/users/" component={Users} />
                 <Route path="/users/:id/" component={User} />
                 <Route path="/users/:id/posts/" component={Posts} />
-                <Route path="/users/:id/posts/:post_id" component={Post} />
+                <Route path="*" component={NotFound} />
               </Switch>
             </Router>
           </div>
