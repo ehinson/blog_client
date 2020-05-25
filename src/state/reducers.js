@@ -17,7 +17,7 @@ export const userReducer = (state, action) => {
         ...state,
         posts: action.payload,
       };
-    case 'createUsers':
+    case 'setUsers':
       return {
         ...state,
         ...action.payload,

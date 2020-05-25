@@ -96,11 +96,14 @@ export const fetchUser = async (auth, userID, usersDispatch, history) => {
   }
 };
 
-export const updateUser = async (values, auth, userID, usersDispatch, history) => {
+export const updateUser = async (values, auth, usersDispatch, authDispatch, history) => {
   const { username, about_me } = values;
+  const {
+    current_user: { id },
+  } = auth;
   try {
     const { data: user } = await axios.put(
-      `/api/users/${userID}`,
+      `/api/users/${id}`,
       {
         about_me,
         username,
@@ -113,6 +116,8 @@ export const updateUser = async (values, auth, userID, usersDispatch, history) =
     );
     console.log('user', user);
     usersDispatch(user);
+    authDispatch(user, auth.token);
+    history.push(`/users/${user.id}`);
   } catch (error) {
     console.log(error);
   }

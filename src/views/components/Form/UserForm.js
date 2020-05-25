@@ -5,7 +5,7 @@ import { required } from 'redux-form-validators';
 import React, { useContext } from 'react';
 import { updateUser } from '../../../state/operations';
 import { UserContext, AuthContext, PostsContext } from '../../components/App';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import 'core-js';
 import 'regenerator-runtime';
@@ -33,8 +33,8 @@ const StyledButton = styled.button`
 `;
 
 const UserForm = ({ isSubmitting, handleSubmit }) => {
-  const { user, userDispatch } = useContext(UserContext);
-  const { auth, authDispatch } = useContext(AuthContext);
+  const { user, handleEditUser } = useContext(UserContext);
+  const { auth, handleUpdateCurrentUser } = useContext(AuthContext);
   const { posts, handleAddPost } = useContext(PostsContext);
   const history = useHistory();
   //   const {
@@ -42,10 +42,13 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
   //   } = user;
   return (
     <Formik
-      initialValues={{ title: '', body: '' }}
+      initialValues={{
+        username: auth?.current_user?.username || '',
+        about_me: auth?.current_user?.about_me || '',
+      }}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          updateUser(values, auth, handleAddPost, history);
+          updateUser(values, auth, handleEditUser, handleUpdateCurrentUser, history);
           console.log(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);

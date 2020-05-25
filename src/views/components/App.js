@@ -75,11 +75,17 @@ const App = () => {
     authDispatch({ type: 'logout', payload: { authenticated: false, token: null } });
   };
 
-  const handleRegister = user => {
+  const handleUpdateCurrentUser = (user, token) => {
     authDispatch({ type: 'current_user', payload: user });
+    window.localStorage.setItem(
+      'auth',
+      JSON.stringify({ authenticated: !!token, token, current_user: user }),
+    );
   };
   const handleAddPost = post => postsDispatch({ type: 'createPost', payload: { post } });
   const handleEditPost = post => postsDispatch({ type: 'updatePost', payload: { post } });
+  const handleAddUser = user => userDispatch({ type: 'createUser', payload: { user } });
+  const handleEditUser = user => userDispatch({ type: 'updateUser', payload: { user } });
   const handleFetchPost = useCallback(
     post => postsDispatch({ type: 'updatePost', payload: { post } }),
     [],
@@ -97,13 +103,22 @@ const App = () => {
     [],
   );
   const handleFetchUsers = useCallback(
-    users => userDispatch({ type: 'updateUsers', payload: { users } }),
+    users => userDispatch({ type: 'setUsers', payload: { users } }),
     [],
   );
 
   return (
-    <AuthContext.Provider value={{ auth, handleLogin, handleLogout }}>
-      <UserContext.Provider value={{ user, handleRegister, handleFetchUser, handleFetchUsers }}>
+    <AuthContext.Provider value={{ auth, handleLogin, handleLogout, handleUpdateCurrentUser }}>
+      <UserContext.Provider
+        value={{
+          user,
+          handleUpdateCurrentUser,
+          handleFetchUser,
+          handleFetchUsers,
+          handleAddUser,
+          handleEditUser,
+        }}
+      >
         <PostsContext.Provider
           value={{
             posts,
