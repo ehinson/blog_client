@@ -10,7 +10,9 @@ const Registration = () => {
   console.log(user, auth);
   return (
     <div>
-      <h1>Register</h1>
+      <header>
+        <h2>Register</h2>
+      </header>
       <RegistrationForm />
     </div>
   );

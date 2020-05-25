@@ -24,13 +24,18 @@ const Home = props => {
 
   return (
     <div>
-      Welcome Home {username}
+      <header>
+        <h2> Welcome Home {username}</h2>
+      </header>
+
       <br />
-      <div> {username}'s Posts</div>
+      <p>{username}'s Posts</p>
       <hr />
-      {posts &&
-        posts.posts.items &&
-        posts.posts.items.map(item => <div key={item.id}>{item.title}</div>)}
+      <ul>
+        {posts &&
+          posts.posts.items &&
+          posts.posts.items.map(item => <li key={item.id}>{item.title}</li>)}
+      </ul>
     </div>
   );
 };

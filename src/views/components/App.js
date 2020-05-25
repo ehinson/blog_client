@@ -7,6 +7,7 @@ import {
   useRouteMatch,
   useParams,
   Link,
+  NavLink,
 } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
@@ -81,7 +82,7 @@ const App = () => {
   };
 
   const handleUpdateCurrentUser = (user, token) => {
-    const item = JSON.parse(window.localStorage.getItem("auth"));
+    const item = JSON.parse(window.localStorage.getItem('auth'));
     console.log(item);
     authDispatch({ type: 'current_user', payload: user });
     window.localStorage.setItem(
@@ -139,9 +140,18 @@ const App = () => {
           <div>
             <GlobalStyle />
             <Router>
-              <button type="button" onClick={() => logoutUser(auth, handleLogout)}>
-                Logout
-              </button>
+              <nav>
+                <ul>
+                  <li>
+                    <Link to="/public">Public Page</Link>
+                  </li>
+                  <li>
+                    <button type="button" onClick={() => logoutUser(auth, handleLogout)}>
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </nav>
 
               <Switch>
                 <PrivateRoute exact path="/" component={Home} />

@@ -9,7 +9,9 @@ const Login = () => {
   console.log(user, auth);
   return (
     <div>
-      <h1>Login</h1>
+      <header>
+        <h2>Login</h2>
+      </header>
       <LoginForm />
     </div>
   );

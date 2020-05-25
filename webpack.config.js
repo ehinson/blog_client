@@ -54,6 +54,7 @@ module.exports = {
     new ManifestPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/index.html'),
+      favicon: 'src/favicon.ico',
     }),
   ],
   devServer: {
