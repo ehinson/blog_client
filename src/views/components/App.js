@@ -69,17 +69,24 @@ const App = () => {
   });
   const [auth, authDispatch] = useLocalStorage('auth', authReducer, initialState.auth);
   // users/:id/posts
-  const handleLogin = (token, user) =>
-    authDispatch({ type: 'login', payload: { authenticated: !!token, token, current_user: user } });
+  const handleLogin = (token, user, expires) =>
+    authDispatch({
+      type: 'login',
+      payload: { authenticated: !!token, token, current_user: user, expires },
+    });
   const handleLogout = () => {
-    authDispatch({ type: 'logout', payload: { authenticated: false, token: null } });
+    const expires = new Date();
+    expires.setDate(expires.getDate() - 1);
+    authDispatch({ type: 'logout', payload: { authenticated: false, token: null, expires } });
   };
 
   const handleUpdateCurrentUser = (user, token) => {
+    const item = JSON.parse(window.localStorage.getItem("auth"));
+    console.log(item);
     authDispatch({ type: 'current_user', payload: user });
     window.localStorage.setItem(
       'auth',
-      JSON.stringify({ authenticated: !!token, token, current_user: user }),
+      JSON.stringify({ authenticated: !!token, token, current_user: user, expires: item.expires }),
     );
   };
   const handleAddPost = post => postsDispatch({ type: 'createPost', payload: { post } });

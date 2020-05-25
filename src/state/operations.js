@@ -35,12 +35,16 @@ export const loginUser = async (values, authDispatch, history) => {
         },
       },
     );
-    window.localStorage.setItem(
-      'auth',
-      JSON.stringify({ authenticated: !!token, token, current_user }),
-    );
-    authDispatch(token, current_user);
-    history.push('/');
+    if (token) {
+      const expires = new Date();
+      expires.setDate(expires.getDate() + 1);
+      window.localStorage.setItem(
+        'auth',
+        JSON.stringify({ authenticated: !!token, token, current_user, expires }),
+      );
+      authDispatch(token, current_user, expires);
+      history.push('/');
+    }
   } catch (error) {
     console.log(error);
   }
@@ -53,7 +57,12 @@ export const logoutUser = async (auth, authDispatch) => {
         Authorization: `Bearer ${auth.token}`,
       },
     });
-    window.localStorage.setItem('auth', JSON.stringify({ authenticated: false, token: null }));
+    const expires = new Date();
+    expires.setDate(expires.getDate() - 1);
+    window.localStorage.setItem(
+      'auth',
+      JSON.stringify({ authenticated: false, token: null, expires }),
+    );
     authDispatch();
   } catch (error) {
     console.log(error);
