@@ -83,9 +83,9 @@ export const createPost = async (values, auth, postsDispatch, history) => {
   }
 };
 
-export const fetchUser = async (auth, postID, usersDispatch, history) => {
+export const fetchUser = async (auth, userID, usersDispatch, history) => {
   try {
-    const { data: user } = await axios.get(`/api/users/${postID}`, {
+    const { data: user } = await axios.get(`/api/users/${userID}`, {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
@@ -125,7 +125,7 @@ export const fetchPost = async (auth, postID, postsDispatch, history) => {
   }
 };
 
-export const fetchPosts = async (auth, postID, postsDispatch, history) => {
+export const fetchPosts = async (auth, postsDispatch, history) => {
   try {
     const { data: post } = await axios.get(`/api/posts`, {
       headers: {
@@ -134,6 +134,20 @@ export const fetchPosts = async (auth, postID, postsDispatch, history) => {
     });
     console.log('data', post);
     postsDispatch(post);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchUserPosts = async (auth, userID, usersDispatch, history) => {
+  try {
+    const { data: posts } = await axios.get(`/api/users/${userID}/posts`, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
+    console.log('data', posts);
+    usersDispatch(posts);
   } catch (error) {
     console.log(error);
   }

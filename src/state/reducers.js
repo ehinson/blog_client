@@ -3,13 +3,30 @@ import React from 'react';
 export const userReducer = (state, action) => {
   switch (action.type) {
     case 'createUser':
-      return { ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+      };
     case 'updateUser':
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case 'updateUserPosts':
+      return {
+        ...state,
+        posts: action.payload,
+      };
     case 'createUsers':
-      return [...state, ...action.payload];
+      return {
+        ...state,
+        ...action.payload,
+      };
     case 'updateUsers':
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+      };
     default:
       return state;
   }

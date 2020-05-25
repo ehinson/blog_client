@@ -20,6 +20,7 @@ import { initialState } from '../../state';
 import { logoutUser } from '../../state/operations';
 import { useLocalStorage } from '../../state/hooks/useLocalStorage';
 import PostForm from './Form/PostForm';
+import UserForm from './Form/UserForm';
 import Posts from './Posts/Posts';
 import Post from './Posts/Post';
 import Users from './Users/Users';
@@ -68,8 +69,6 @@ const App = () => {
     ...initialState.post,
   });
   const [auth, authDispatch] = useLocalStorage('auth', authReducer, initialState.auth);
-  // logout/
-  // login/
   // users/:id/posts
   const handleLogin = token =>
     authDispatch({ type: 'login', payload: { authenticated: !!token, token } });
@@ -88,7 +87,10 @@ const App = () => {
     user => userDispatch({ type: 'updateUser', payload: { user } }),
     [],
   );
-  const handleFetchUserPosts = posts => postsDispatch({ type: 'updatePosts', payload: { posts } });
+  const handleFetchUserPosts = useCallback(
+    posts => userDispatch({ type: 'updateUserPosts', payload: { posts } }),
+    [],
+  );
   const handleFetchPosts = useCallback(
     posts => postsDispatch({ type: 'updatePosts', payload: { posts } }),
     [],
@@ -126,8 +128,10 @@ const App = () => {
                 <Route path="/login">
                   <Login />
                 </Route>
+                <Route path="/users/:id/posts/:post_id/:action(add|edit)" component={PostForm} />
                 <Route path="/users/:id/posts/:post_id" component={Post} />
                 <Route path="/users/:id/posts/" component={Posts} />
+                <Route path="/users/:id/edit" component={UserForm} />
                 <Route path="/users/:id/" component={User} />
                 <Route exact path="/users/" component={Users} />
                 <Route path="*" component={NotFound} />

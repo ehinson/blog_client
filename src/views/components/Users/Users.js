@@ -9,9 +9,8 @@ const Users = props => {
   const { user, handleFetchUsers } = useContext(UserContext);
   const { auth, authDispatch } = useContext(AuthContext);
 
-  //   let { user_id } = useParams();
   const history = useHistory();
-  //   console.log(user, user_id);
+  console.log(user && user.users);
 
   useEffect(() => {
     fetchUsers(auth, handleFetchUsers, history);
