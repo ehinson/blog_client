@@ -44,6 +44,11 @@ export const authReducer = (state, action) => {
         ...state,
         ...action.payload,
       };
+    case 'current_user':
+      return {
+        ...state,
+        ...action.payload,
+      };
     default:
       return state;
   }

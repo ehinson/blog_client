@@ -14,6 +14,8 @@ import { bool } from 'prop-types';
 
 import Registration from '../containers/Registration';
 import Login from '../containers/Login';
+import Home from '../containers/Home';
+import NotFound from '../containers/NotFound';
 import PrivateRoute from './PrivateRoute';
 import { userReducer, authReducer, postsReducer } from '../../state/reducers';
 import { initialState } from '../../state';
@@ -55,9 +57,6 @@ export const Test = () => {
     </div>
   );
 };
-export const NotFound = () => {
-  return <div>NotFound</div>;
-};
 
 const App = () => {
   const [user, userDispatch] = useReducer(userReducer, {
@@ -70,13 +69,15 @@ const App = () => {
   });
   const [auth, authDispatch] = useLocalStorage('auth', authReducer, initialState.auth);
   // users/:id/posts
-  const handleLogin = token =>
-    authDispatch({ type: 'login', payload: { authenticated: !!token, token } });
+  const handleLogin = (token, user) =>
+    authDispatch({ type: 'login', payload: { authenticated: !!token, token, current_user: user } });
   const handleLogout = () => {
     authDispatch({ type: 'logout', payload: { authenticated: false, token: null } });
   };
 
-  const handleRegister = user => userDispatch({ type: 'register', payload: user });
+  const handleRegister = user => {
+    authDispatch({ type: 'current_user', payload: user });
+  };
   const handleAddPost = post => postsDispatch({ type: 'createPost', payload: { post } });
   const handleEditPost = post => postsDispatch({ type: 'updatePost', payload: { post } });
   const handleFetchPost = useCallback(
@@ -121,17 +122,20 @@ const App = () => {
               </button>
 
               <Switch>
-                <Route exact path="/" component={Test} />
+                <PrivateRoute exact path="/" component={Home} />
                 <Route path="/register">
                   <Registration />
                 </Route>
                 <Route path="/login">
                   <Login />
                 </Route>
-                <Route path="/users/:id/posts/:post_id/:action(add|edit)" component={PostForm} />
+                <PrivateRoute
+                  path="/users/:id/posts/:post_id/:action(add|edit)"
+                  component={PostForm}
+                />
                 <Route path="/users/:id/posts/:post_id" component={Post} />
                 <Route path="/users/:id/posts/" component={Posts} />
-                <Route path="/users/:id/edit" component={UserForm} />
+                <PrivateRoute path="/users/:id/edit" component={UserForm} />
                 <Route path="/users/:id/" component={User} />
                 <Route exact path="/users/" component={Users} />
                 <Route path="*" component={NotFound} />

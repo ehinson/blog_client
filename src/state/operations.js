@@ -24,7 +24,7 @@ export const loginUser = async (values, authDispatch, history) => {
 
   try {
     const {
-      data: { token },
+      data: { token, current_user },
     } = await axios.post(
       `/api/tokens`,
       {},
@@ -35,8 +35,11 @@ export const loginUser = async (values, authDispatch, history) => {
         },
       },
     );
-    window.localStorage.setItem('auth', JSON.stringify({ authenticated: !!token, token }));
-    authDispatch(token);
+    window.localStorage.setItem(
+      'auth',
+      JSON.stringify({ authenticated: !!token, token, current_user }),
+    );
+    authDispatch(token, current_user);
     history.push('/');
   } catch (error) {
     console.log(error);
@@ -45,15 +48,11 @@ export const loginUser = async (values, authDispatch, history) => {
 
 export const logoutUser = async (auth, authDispatch) => {
   try {
-    const { data } = await axios.delete(
-      `/api/tokens`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${auth.token}`,
-        },
+    const { data } = await axios.delete(`/api/tokens`, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
       },
-    );
+    });
     window.localStorage.setItem('auth', JSON.stringify({ authenticated: false, token: null }));
     authDispatch();
   } catch (error) {
@@ -90,6 +89,28 @@ export const fetchUser = async (auth, userID, usersDispatch, history) => {
         Authorization: `Bearer ${auth.token}`,
       },
     });
+    console.log('user', user);
+    usersDispatch(user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateUser = async (values, auth, userID, usersDispatch, history) => {
+  const { username, about_me } = values;
+  try {
+    const { data: user } = await axios.put(
+      `/api/users/${userID}`,
+      {
+        about_me,
+        username,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      },
+    );
     console.log('user', user);
     usersDispatch(user);
   } catch (error) {

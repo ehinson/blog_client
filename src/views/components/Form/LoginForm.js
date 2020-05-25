@@ -34,6 +34,7 @@ const LoginForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
   const { auth, handleLogin } = useContext(AuthContext);
   const history = useHistory();
+  console.log(user);
   return (
     <Formik
       initialValues={{ username: '', password: '' }}

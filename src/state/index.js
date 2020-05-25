@@ -7,8 +7,7 @@ export const initialState = {
   auth: {
     authenticated: null,
     token: null,
-    login: null,
-    logout: null,
+    current_user: null,
   },
 };
 // add to localstorage

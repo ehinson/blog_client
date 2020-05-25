@@ -3,7 +3,7 @@ import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import { required } from 'redux-form-validators';
 import React, { useContext } from 'react';
-import { createPost } from '../../../state/operations';
+import { updateUser } from '../../../state/operations';
 import { UserContext, AuthContext, PostsContext } from '../../components/App';
 import { useHistory } from 'react-router-dom';
 
@@ -37,12 +37,15 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
   const { auth, authDispatch } = useContext(AuthContext);
   const { posts, handleAddPost } = useContext(PostsContext);
   const history = useHistory();
+  //   const {
+  //     user: { id: user_id },
+  //   } = user;
   return (
     <Formik
       initialValues={{ title: '', body: '' }}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          createPost(values, auth, handleAddPost, history);
+          updateUser(values, auth, handleAddPost, history);
           console.log(JSON.stringify(values, null, 2));
           setSubmitting(false);
         }, 400);
@@ -51,18 +54,18 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
       {({ isSubmitting }) => (
         <StyledFormWrapper>
           <Field
-            name="title"
+            name="username"
             type="text"
             component={InputField}
-            placeholder="title"
+            placeholder="username"
             label="Please enter a username"
           />
           <Field
-            name="body"
+            name="about_me"
             type="textarea"
             component={TextAreaField}
-            placeholder="body"
-            label="Please enter a email"
+            placeholder="about_me"
+            label="What about you?"
           />
           <div>
             <StyledButton type="submit">Submit</StyledButton>
