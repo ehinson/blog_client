@@ -29,13 +29,15 @@ const StyledError = styled.strong`
   display: inline-block;
 `;
 
-const Input = ({ field, form, label, type, placeholder, ...props }) => (
+const Input = ({ field, form: { touched, errors }, label, type, placeholder, meta, ...props }) => (
   <div>
     <StyledLabel>{label}</StyledLabel>
     <div>
       <StyledInput {...field} {...props} placeholder={placeholder} type={type} />
-      <StyledError>Error</StyledError>
+
+
     </div>
+    {touched[field.name] && errors[field.name] && <StyledError>{errors[field.name]}</StyledError>}
   </div>
 );
 

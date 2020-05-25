@@ -2,9 +2,10 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import React, { useContext } from 'react';
-import { loginUser } from '../../../state/operations';
-import { UserContext, AuthContext } from '../../components/App';
+import { loginUser } from 'state/operations';
+import { UserContext, AuthContext } from 'views/components/App';
 import { useHistory } from 'react-router-dom';
+import * as Yup from 'yup';
 
 import 'core-js';
 import 'regenerator-runtime';
@@ -30,6 +31,20 @@ const StyledButton = styled.button`
   padding: 10px 15px;
 `;
 
+const LoginSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(3, 'Please choose a username that is at least 3 characters long.')
+    .min(36, 'Please choose a username that is fewer than 36 characters long.')
+    .required('Required.'),
+  password: Yup.string()
+    .required('Required')
+    .min(
+      8,
+      'Password must be at lease 8 characters long, have a lowercase letter, an uppercase letter and a special character.',
+    )
+    .matches('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/'),
+});
+
 const LoginForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
   const { auth, handleLogin } = useContext(AuthContext);
@@ -38,6 +53,7 @@ const LoginForm = ({ isSubmitting, handleSubmit }) => {
   return (
     <Formik
       initialValues={{ username: '', password: '' }}
+      validationSchema={LoginSchema}
       onSubmit={(values, { setSubmitting }) => {
         console.log(values);
         setTimeout(() => {
