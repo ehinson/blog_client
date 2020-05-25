@@ -13,21 +13,21 @@ import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
 import { bool } from 'prop-types';
 
-import Registration from '../containers/Registration';
-import Login from '../containers/Login';
-import Home from '../containers/Home';
-import NotFound from '../containers/NotFound';
+import Registration from 'views/containers/Registration';
+import Login from 'views/containers/Login';
+import Home from 'views/containers/Home';
+import NotFound from 'views/containers/NotFound';
 import PrivateRoute from './PrivateRoute';
-import { userReducer, authReducer, postsReducer } from '../../state/reducers';
-import { initialState } from '../../state';
-import { logoutUser } from '../../state/operations';
-import { useLocalStorage } from '../../state/hooks/useLocalStorage';
+import { userReducer, authReducer, postsReducer } from 'state/reducers';
+import { initialState } from 'state';
+import { useLocalStorage } from 'state/hooks/useLocalStorage';
 import PostForm from './Form/PostForm';
 import UserForm from './Form/UserForm';
 import Posts from './Posts/Posts';
 import Post from './Posts/Post';
 import Users from './Users/Users';
 import User from './Users/User';
+import Navigation from 'views/components/Navigation/Navigation';
 
 const propTypes = {};
 
@@ -140,18 +140,7 @@ const App = () => {
           <div>
             <GlobalStyle />
             <Router>
-              <nav>
-                <ul>
-                  <li>
-                    <Link to="/public">Public Page</Link>
-                  </li>
-                  <li>
-                    <button type="button" onClick={() => logoutUser(auth, handleLogout)}>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+              <Navigation />
 
               <Switch>
                 <PrivateRoute exact path="/" component={Home} />
