@@ -4,6 +4,7 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import { fetchUser, fetchUserPosts } from '../../../state/operations';
 
 import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import _Post from 'views/components/Posts/_Post';
 
 const User = props => {
   const { user, handleFetchUser } = useContext(UserContext);
@@ -26,15 +27,20 @@ const User = props => {
   return (
     <div>
       User
+      {current_user.id === parseInt(user_id, 10) && (
+        <Link to={`/users/${current_user.id}/edit`}>Edit Profile</Link>
+      )}
       <br />
-      {pageUser && pageUser.username}
+      {pageUser && pageUser.username} <br />
+      Last seen: {pageUser && pageUser.last_seen}
+      <img src={pageUser && pageUser._links.avatar} alt={pageUser && pageUser.username} />
       <div>Posts</div>
       <hr />
       <ul>
         {posts && posts.posts.items.length > 0 ? (
           posts.posts.items.map(item => (
             <li key={item.id}>
-              <p>{item.title}</p>
+              <_Post item={item} />
               {current_user.id === parseInt(user_id, 10) && (
                 <Link to={`/users/${user_id}/posts/${item.id}/edit`}>Edit Post</Link>
               )}

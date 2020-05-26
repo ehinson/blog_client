@@ -4,6 +4,7 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import { fetchPost } from '../../../state/operations';
 
 import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import _Post from './_Post';
 
 const Post = props => {
   const { posts, handleFetchPost } = useContext(PostsContext);
@@ -21,9 +22,8 @@ const Post = props => {
     <div>
       Post
       <br />
-      <h5>{posts.post && posts.post.title}</h5>
+      <_Post item={posts.post} />
       <br />
-      <p>{posts.post && posts.post.body}</p>
       {auth.current_user.id === parseInt(user_id, 10) && (
         <Link to={`/users/${user_id}/posts/${post_id}/edit`}>Edit Post</Link>
       )}
