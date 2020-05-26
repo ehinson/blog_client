@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useHistory, Link } from 'react-router-dom';
-import { fetchUser, fetchUserPosts } from '../../../state/operations';
+import { fetchUser, fetchUserPosts } from 'state/operations';
 
-import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import { UserContext, AuthContext, PostsContext } from 'views/containers/App';
 import _Post from 'views/components/Posts/_Post';
 
 const User = props => {
@@ -13,7 +13,6 @@ const User = props => {
 
   let { id: user_id } = useParams();
   const history = useHistory();
-  console.log('user', user_id, user);
 
   useEffect(() => {
     fetchUser(auth, user_id, handleFetchUser, history);
@@ -22,7 +21,6 @@ const User = props => {
 
   const { posts, user: pageUser } = user;
   const { current_user } = auth;
-  console.log(pageUser);
 
   return (
     <div>

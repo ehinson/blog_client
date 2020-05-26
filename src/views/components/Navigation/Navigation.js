@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { UserContext, AuthContext } from 'views/components/App';
+import { UserContext, AuthContext } from 'views/containers/App';
 import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,

@@ -3,7 +3,7 @@ import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import React, { useContext } from 'react';
 import { loginUser } from 'state/operations';
-import { UserContext, AuthContext } from 'views/components/App';
+import { UserContext, AuthContext } from 'views/containers/App';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 

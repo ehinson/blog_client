@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useHistory } from 'react-router-dom';
-import { fetchUsers } from '../../../state/operations';
+import { fetchUsers } from 'state/operations';
 
-import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import { UserContext, AuthContext, PostsContext } from 'views/containers/App';
 
 const Users = props => {
   const { user, handleFetchUsers } = useContext(UserContext);

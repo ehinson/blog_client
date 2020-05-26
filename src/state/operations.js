@@ -126,7 +126,7 @@ export const updateUser = async (values, auth, usersDispatch, authDispatch, hist
     );
     console.log('user', user);
     usersDispatch(user);
-    // TODO: only if user id matches current_user? Check view logic
+    // TODO: only if user id matches current_user?
     authDispatch(user, auth.token);
     history.push(`/users/${user.id}`);
   } catch (error) {

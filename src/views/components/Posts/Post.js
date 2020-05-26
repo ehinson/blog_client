@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useHistory, Link } from 'react-router-dom';
-import { fetchPost } from '../../../state/operations';
+import { fetchPost } from 'state/operations';
 
-import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import { UserContext, AuthContext, PostsContext } from 'views/containers/App';
 import _Post from './_Post';
 
 const Post = props => {

@@ -3,8 +3,8 @@ import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import { required } from 'redux-form-validators';
 import React, { useContext } from 'react';
-import { createPost } from '../../../state/operations';
-import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import { createPost } from 'state/operations';
+import { UserContext, AuthContext, PostsContext } from 'views/containers/App';
 import { useHistory } from 'react-router-dom';
 
 import 'core-js';
