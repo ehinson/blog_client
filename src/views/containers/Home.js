@@ -1,6 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useHistory, Link } from 'react-router-dom';
+import sanitizeHtml from 'sanitize-html';
+
 import { fetchUser, fetchUserPosts } from 'state/operations';
 
 import { UserContext, PostsContext } from 'views/components/App';
@@ -36,7 +38,17 @@ const Home = props => {
           posts.posts.items.map(item => (
             <li key={item.id}>
               <h5>{item.title}</h5>
-              <p>{item.body}</p>
+              {/* {TODO: // make this a component} */}
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeHtml(item.body, {
+                    allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+                    allowedAttributes: {
+                      a: ['href', 'target'],
+                    },
+                  }),
+                }}
+              />
               <Link to={`/posts/${item.id}/edit`}>Edit Post</Link>
             </li>
           ))

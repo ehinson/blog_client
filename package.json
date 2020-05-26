@@ -34,6 +34,7 @@
     "redux-form-validators": "^3.3.2",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
+    "sanitize-html": "^1.24.0",
     "styled-components": "^4.4.1",
     "styled-normalize": "^8.0.7",
     "yup": "^0.29.0"

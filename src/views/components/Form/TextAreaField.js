@@ -40,6 +40,7 @@ const TextArea = ({ field, form, label, type, placeholder, ...props }) => (
         {...props}
         placeholder={placeholder}
         type={type}
+        value={field.value}
         onChange={field.onChange(field.name)}
       />
       <StyledError>Error</StyledError>
