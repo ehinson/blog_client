@@ -50,7 +50,7 @@ export const loginUser = async (values, authDispatch, history) => {
   }
 };
 
-export const logoutUser = async (auth, authDispatch) => {
+export const logoutUser = async (auth, authDispatch, history) => {
   try {
     const { data } = await axios.delete(`/api/tokens`, {
       headers: {
@@ -64,6 +64,7 @@ export const logoutUser = async (auth, authDispatch) => {
       JSON.stringify({ authenticated: false, token: null, expires }),
     );
     authDispatch();
+    history.push('/login');
   } catch (error) {
     console.log(error);
   }

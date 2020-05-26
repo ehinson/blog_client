@@ -150,10 +150,8 @@ const App = () => {
                 <Route path="/login">
                   <Login />
                 </Route>
-                <PrivateRoute
-                  path="/users/:id/posts/:post_id/:action(add|edit)"
-                  component={PostForm}
-                />
+                <PrivateRoute path="/users/:id/posts/:post_id/edit" component={PostForm} />
+                <PrivateRoute path="/users/:id/posts/add" component={PostForm} />
                 <Route path="/users/:id/posts/:post_id" component={Post} />
                 <Route path="/users/:id/posts/" component={Posts} />
                 <PrivateRoute path="/users/:id/edit" component={UserForm} />

@@ -34,22 +34,17 @@ const StyledButton = styled.button`
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
     .min(3, 'Please choose a username that is at least 3 characters long.')
-    .min(36, 'Please choose a username that is fewer than 36 characters long.')
+    .max(36, 'Please choose a username that is fewer than 36 characters long.')
     .required('Required.'),
-  password: Yup.string()
-    .required('Required')
-    .min(
-      8,
-      'Password must be at lease 8 characters long, have a lowercase letter, an uppercase letter and a special character.',
-    )
-    .matches('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/'),
+  password: Yup.string().required('Required'),
 });
 
 const LoginForm = ({ isSubmitting, handleSubmit }) => {
   const { user, userDispatch } = useContext(UserContext);
   const { auth, handleLogin } = useContext(AuthContext);
   const history = useHistory();
-  console.log(user);
+  const { current_user } = auth;
+
   return (
     <Formik
       initialValues={{ username: '', password: '' }}

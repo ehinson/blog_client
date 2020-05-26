@@ -17,25 +17,37 @@ import { logoutUser } from 'state/operations';
 const Navigation = props => {
   const { user } = useContext(UserContext);
   const { auth, handleLogout } = useContext(AuthContext);
-  const { current_user } = auth;
+  const { current_user, expires, token } = auth;
+  const history = useHistory();
+  const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
 
   return (
     <nav>
       <ul>
-        <li>
-          <Link to="/login">Login</Link>
-        </li>
-        <li>
-          <Link to="/register">Register</Link>
-        </li>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <button type="button" onClick={() => logoutUser(auth, handleLogout)}>
-            Logout
-          </button>
-        </li>
+        {is_anonymous ? (
+          <>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/register">Register</Link>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <button type="button" onClick={() => logoutUser(auth, handleLogout, useHistory)}>
+                Logout
+              </button>
+            </li>
+            <li>
+              <Link to={`/users/${current_user.id}/edit`}>Edit Profile</Link>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );

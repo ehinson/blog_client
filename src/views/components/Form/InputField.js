@@ -34,8 +34,6 @@ const Input = ({ field, form: { touched, errors }, label, type, placeholder, met
     <StyledLabel>{label}</StyledLabel>
     <div>
       <StyledInput {...field} {...props} placeholder={placeholder} type={type} />
-
-
     </div>
     {touched[field.name] && errors[field.name] && <StyledError>{errors[field.name]}</StyledError>}
   </div>
