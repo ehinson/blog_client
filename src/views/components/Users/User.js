@@ -34,6 +34,7 @@ const User = props => {
       {pageUser && pageUser.username} <br />
       Last seen: {pageUser && pageUser.last_seen}
       <img src={pageUser && pageUser._links.avatar} alt={pageUser && pageUser.username} />
+      {pageUser && pageUser.about_me} <br />
       <div>Posts</div>
       <hr />
       <ul>

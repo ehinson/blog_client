@@ -54,10 +54,6 @@ const LoginSchema = Yup.object().shape({
     .min(
       8,
       'Password must be at lease 8 characters long, have a lowercase letter, an uppercase letter and a special character.',
-    )
-    .matches(
-      '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/',
-      'Password must be at lease 8 characters long, have a lowercase letter, an uppercase letter and a special character.',
     ),
   password2: Yup.string()
     .required('Required')

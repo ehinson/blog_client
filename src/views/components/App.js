@@ -87,7 +87,12 @@ const App = () => {
     authDispatch({ type: 'current_user', payload: user });
     window.localStorage.setItem(
       'auth',
-      JSON.stringify({ authenticated: !!token, token, current_user: user, expires: item.expires }),
+      JSON.stringify({
+        authenticated: !!token,
+        token: token ? token : null,
+        current_user: user,
+        expires: item ? item.expires : null,
+      }),
     );
   };
   const handleAddPost = post => postsDispatch({ type: 'createPost', payload: { post } });
