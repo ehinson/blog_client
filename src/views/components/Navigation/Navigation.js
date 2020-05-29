@@ -44,7 +44,7 @@ const Navigation = props => {
               </button>
             </li>
             <li>
-              <Link to={`/users/${current_user.id}`}>My Profile</Link>
+              <Link to={`/users/${current_user.id}`}>{current_user.username}'s Profile</Link>
             </li>
           </>
         )}

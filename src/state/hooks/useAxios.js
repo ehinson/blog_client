@@ -70,7 +70,7 @@ export const useAxios = ({ method, url, withAuth = false, config }) => {
         dispatch({ type: 'failure', payload: { error } });
       }
     },
-    [instance, response, dispatch],
+    [instance, dispatch],
   );
 
   // console.log('blah', response);
