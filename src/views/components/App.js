@@ -13,21 +13,21 @@ import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
 import { bool } from 'prop-types';
 
-import Registration from 'views/containers/Registration';
-import Login from 'views/containers/Login';
-import Home from 'views/containers/Home';
-import NotFound from 'views/containers/NotFound';
+import Registration from 'views/pages/Registration';
+import Login from 'views/pages/Login';
+import Home from 'views/pages/Home';
+import NotFound from 'views/pages/NotFound';
 import PrivateRoute from './PrivateRoute';
 import { userReducer, authReducer, postsReducer } from 'state/reducers';
 import { initialState } from 'state';
 import { useLocalStorage } from 'state/hooks/useLocalStorage';
-import PostForm from './Form/PostForm';
-import UserForm from './Form/UserForm';
-import Posts from './Posts/Posts';
+import { useAxios } from 'state/hooks/useAxios';
 import Post from './Posts/Post';
-import Users from './Users/Users';
-import User from './Users/User';
 import Navigation from 'views/components/Navigation/Navigation';
+import UserProfile from 'views/pages/UserProfile';
+import EditProfile from 'views/pages/EditProfile';
+import AddEditPost from 'views/pages/AddEditPost';
+import SinglePost from 'views/pages/SinglePost';
 
 const propTypes = {};
 
@@ -50,15 +50,6 @@ export const UserContext = createContext();
 export const AuthContext = createContext();
 export const PostsContext = createContext();
 
-export const Test = () => {
-  return (
-    <div>
-      Test
-      <PostForm />
-    </div>
-  );
-};
-
 const App = () => {
   const [user, userDispatch] = useReducer(userReducer, {
     ...initialState.users,
@@ -69,6 +60,8 @@ const App = () => {
     ...initialState.post,
   });
   const [auth, authDispatch] = useLocalStorage('auth', authReducer, initialState.auth);
+
+  console.log(auth, "auth")
   // users/:id/posts
   const handleLogin = (token, user, expires) =>
     authDispatch({
@@ -84,17 +77,47 @@ const App = () => {
   const handleUpdateCurrentUser = (user, token) => {
     const item = JSON.parse(window.localStorage.getItem('auth'));
     console.log(item);
-    authDispatch({ type: 'current_user', payload: user });
-    window.localStorage.setItem(
-      'auth',
-      JSON.stringify({
-        authenticated: !!token,
-        token: token ? token : null,
-        current_user: user,
-        expires: item ? item.expires : null,
-      }),
-    );
+    // really need to look at this for reg and login
+    if (token && user) {
+      authDispatch({ type: 'current_user', payload: user });
+      window.localStorage.setItem(
+        'auth',
+        JSON.stringify({
+          authenticated: !!token,
+          token: token ? token : null,
+          current_user: user,
+          expires: item ? item.expires : null,
+        }),
+      );
+    }
   };
+
+
+
+  // const { response: postTokenResponse, request: postToken } = useAxios({
+  //   method: 'post',
+  //   url: `/tokens`,
+  // });
+
+  // export const registerUser = async (values, userDispatch, history) => {
+  //   const { username, password, email } = values;
+
+  //   try {
+  //     const { data: user } = await axios.post(`/api/users`, {
+  //       username,
+  //       email,
+  //       password,
+  //     });
+  //     console.log(user);
+  //     userDispatch(user); // transform user here
+
+  //     history.push('/login');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+
   const handleAddPost = post => postsDispatch({ type: 'createPost', payload: { post } });
   const handleEditPost = post => postsDispatch({ type: 'updatePost', payload: { post } });
   const handleAddUser = user => userDispatch({ type: 'createUser', payload: { user } });
@@ -148,20 +171,18 @@ const App = () => {
               <Navigation />
 
               <Switch>
-                <PrivateRoute exact path="/" component={Home} />
+                <Route exact path="/" component={Home} />
                 <Route path="/register">
                   <Registration />
                 </Route>
                 <Route path="/login">
                   <Login />
                 </Route>
-                <PrivateRoute path="/users/:id/posts/:post_id/edit" component={PostForm} />
-                <PrivateRoute path="/users/:id/posts/add" component={PostForm} />
-                <Route path="/users/:id/posts/:post_id" component={Post} />
-                <Route path="/users/:id/posts/" component={Posts} />
-                <PrivateRoute path="/users/:id/edit" component={UserForm} />
-                <Route path="/users/:id/" component={User} />
-                <Route exact path="/users/" component={Users} />
+                <PrivateRoute path="/users/:id/posts/:post_id/edit" component={AddEditPost} />
+                <PrivateRoute path="/users/:id/posts/add" component={AddEditPost} />
+                <Route path="/users/:id/posts/:post_id" component={SinglePost} />
+                <PrivateRoute path="/users/:id/edit" component={EditProfile} />
+                <Route path="/users/:id/" component={UserProfile} />
                 <Route path="*" component={NotFound} />
               </Switch>
             </Router>

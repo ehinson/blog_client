@@ -1,10 +1,11 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
-import React, { useContext } from 'react';
-import { registerUser } from 'state/operations';
+import React, { useContext, useCallback } from 'react';
+// import { registerUser } from 'state/operations';
 import { UserContext, AuthContext } from 'views/components/App';
-import { useHistory } from 'react-router-dom';
+import { useAxios } from 'state/hooks/useAxios';
+import { useHistory, Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import 'core-js';
@@ -41,7 +42,7 @@ Password Regex : https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-
 (?=.{8,})	The string must be eight characters or longer
 */
 
-const LoginSchema = Yup.object().shape({
+const RegisterSchema = Yup.object().shape({
   username: Yup.string()
     .min(3, 'Please choose a username that is at least 3 characters long.')
     .max(36, 'Please choose a username that is fewer than 36 characters long.')
@@ -64,60 +65,96 @@ const LoginSchema = Yup.object().shape({
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
-const RegistrationForm = ({ isSubmitting, handleSubmit }) => {
-  const { user, handleUpdateCurrentUser } = useContext(UserContext);
-  const { auth, authDispatch } = useContext(AuthContext);
+const RegistrationForm = () => {
+  const {
+    auth: { current_user },
+  } = useContext(AuthContext);
   const history = useHistory();
-  return (
-    <Formik
-      initialValues={{ username: '', email: '', password: '', password2: '' }}
-      validationSchema={LoginSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          registerUser(values, handleUpdateCurrentUser, history);
-          console.log(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <StyledFormWrapper>
-          <Field
-            name="username"
-            type="text"
-            component={InputField}
-            placeholder="username"
-            label="Please enter a username"
-          />
-          <Field
-            name="email"
-            type="email"
-            component={InputField}
-            placeholder="email"
-            label="Please enter a email"
-          />
-          <Field
-            name="password"
-            type="password"
-            component={InputField}
-            placeholder="password"
-            label="Please enter a password"
-          />
-          <Field
-            name="password2"
-            type="password"
-            component={InputField}
-            placeholder="password again"
-            label="Please enter a password"
-          />
-          <div>
-            <StyledButton type="submit">Submit</StyledButton>
-            <StyledButton type="reset">Clear Values</StyledButton>
-          </div>
-        </StyledFormWrapper>
-      )}
-    </Formik>
+  const { response: postUserResponse, request: postUser } = useAxios({
+    method: 'post',
+    url: `/users`,
+  });
+  const registerUser = useCallback(
+    async values => {
+      const { username, password, email } = values;
+
+      try {
+        await postUser({
+          username,
+          email,
+          password,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [postUser],
   );
+  console.log(postUserResponse);
+  const { status } = postUserResponse;
+
+  if (current_user) {
+    return <Redirect to="/" />;
+  }
+
+  if (status === 0) {
+    return (
+      <Formik
+        initialValues={{ username: '', email: '', password: '', password2: '' }}
+        validationSchema={RegisterSchema}
+        onSubmit={registerUser}
+      >
+        {({ isSubmitting }) => (
+          <StyledFormWrapper>
+            <Field
+              name="username"
+              type="text"
+              component={InputField}
+              placeholder="username"
+              label="Please enter a username"
+            />
+            <Field
+              name="email"
+              type="email"
+              component={InputField}
+              placeholder="email"
+              label="Please enter a email"
+            />
+            <Field
+              name="password"
+              type="password"
+              component={InputField}
+              placeholder="password"
+              label="Please enter a password"
+            />
+            <Field
+              name="password2"
+              type="password"
+              component={InputField}
+              placeholder="password again"
+              label="Please enter a password"
+            />
+            <div>
+              <StyledButton disabled={isSubmitting} type="submit">
+                Submit
+              </StyledButton>
+              <StyledButton disabled={isSubmitting} type="reset">
+                Clear Values
+              </StyledButton>
+            </div>
+          </StyledFormWrapper>
+        )}
+      </Formik>
+    );
+  }
+
+  if (status === 1) {
+    return <div>...Loading</div>;
+  }
+
+  if (status === 2) {
+    return <Redirect to="/login" />;
+  }
 };
 
 RegistrationForm.propTypes = propTypes;
