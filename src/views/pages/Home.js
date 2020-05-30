@@ -34,13 +34,13 @@ const Home = props => {
           <>
             <div>{item.title}</div>
             <div>{item.body}</div>
-            <div>{item.author.username}</div>
-            {item.author.id === current_user.id && (
-              <Link to={`/posts/${item.id}/edit`}>Edit Post</Link>
+            <div><Link to={`/users/${item.author.id}`}>{item.author.username}</Link></div>
+            {current_user && item.author.id === current_user.id && (<div>
+              <Link to={`/posts/${item.id}/edit`}>Edit Post</Link></div>
             )}
           </>
         ))}
-      {current_user.id && <Link to={`/posts/add`}>Create Your Own Post</Link>}
+      <div><Link to={`/posts/add`}>Create Your Own Post</Link></div>
     </div>
   );
 };

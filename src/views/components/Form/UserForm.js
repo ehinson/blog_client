@@ -1,14 +1,12 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
-import { required } from 'redux-form-validators';
-import React, { useContext } from 'react';
-import { updateUser } from '../../../state/operations';
-import { UserContext, AuthContext, PostsContext } from '../../components/App';
-import { useHistory, useParams } from 'react-router-dom';
-
-import 'core-js';
-import 'regenerator-runtime';
+import { updateUser } from 'state/operations';
+import { UserContext, AuthContext, PostsContext } from 'views/components/App';
+import { useHistory, useParams, Redirect } from 'react-router-dom';
+import React, { useContext, useCallback } from 'react';
+import { useAxios } from 'state/hooks/useAxios';
+import * as Yup from 'yup';
 
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
@@ -34,25 +32,46 @@ const StyledButton = styled.button`
 
 const UserForm = ({ isSubmitting, handleSubmit }) => {
   const { user, handleEditUser } = useContext(UserContext);
-  const { auth, handleUpdateCurrentUser } = useContext(AuthContext);
   const { posts, handleAddPost } = useContext(PostsContext);
+  const {
+    handleUpdateCurrentUser,
+    auth: { current_user },
+  } = useContext(AuthContext);
   const history = useHistory();
-  //   const {
-  //     user: { id: user_id },
-  //   } = user;
+  const {id: user_id}  = useParams()
+  const { response: putUserResponse, request: putUser } = useAxios({
+    method: 'put',
+    url: `/users/${user_id}`,
+    withAuth: true
+  });
+  const editUser = useCallback(
+    async values => {
+      const { username, about_me } = values;
+
+      try {
+        await putUser(
+          {username, about_me},
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [putUser],
+  );
+  console.log(putUserResponse);
+  const { status, response } = putUserResponse;
+
+  if (status === 2 && response.data) {
+    handleUpdateCurrentUser(response.data)
+    return <Redirect to={`/users/${user_id}`}/>
+  }
   return (
     <Formik
       initialValues={{
-        username: auth?.current_user?.username || '',
-        about_me: auth?.current_user?.about_me || '',
+        username: current_user?.username || '',
+        about_me: current_user?.about_me || '',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          updateUser(values, auth, handleEditUser, handleUpdateCurrentUser, history);
-          console.log(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
+      onSubmit={editUser}
     >
       {({ isSubmitting }) => (
         <StyledFormWrapper>

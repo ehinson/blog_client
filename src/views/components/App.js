@@ -74,17 +74,18 @@ const App = () => {
     authDispatch({ type: 'logout', payload: { authenticated: false, token: null, expires } });
   };
 
-  const handleUpdateCurrentUser = (user, token) => {
+  // edit Profile
+  const handleUpdateCurrentUser = (user) => {
     const item = JSON.parse(window.localStorage.getItem('auth'));
     console.log(item);
     // really need to look at this for reg and login
-    if (token && user) {
+    if (user) {
       authDispatch({ type: 'current_user', payload: user });
       window.localStorage.setItem(
         'auth',
         JSON.stringify({
-          authenticated: !!token,
-          token: token ? token : null,
+          authenticated: !!item.token,
+          token: item.token ? item.token : null,
           current_user: user,
           expires: item ? item.expires : null,
         }),

@@ -47,26 +47,28 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     url: `/posts`,
     withAuth: true,
   });
+
   const { response: putPostResponse, request: putPost } = useAxios({
     method: 'put',
     url: `/posts/${post_id}`,
     withAuth: true,
   });
 
-  const { response: getPostResponse, request: getPost } = useAxios({
-    method: 'get',
-    url: `/posts/${post_id}`,
-  });
+    const { response: getPostResponse, request: getPost } = useAxios({
+      method: 'get',
+      url: `/posts/${post_id}`,
+    });
+  
 
   useEffect(() => {
     const fetchData = async () => {
-      if (getPostResponse.status === 0) {
+      if (getPostResponse.status === 0 && post_id) {
         await getPost();
       }
     };
 
     fetchData();
-  }, [getPost, getPostResponse]);
+  }, [post_id]);
   console.log('put', putPostResponse);
 
   const addPost = useCallback(
@@ -85,46 +87,39 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     [postPost],
   );
 
-  const editPost = useCallback(
-    async values => {
-      const { title, body } = values;
+  const editPost = useCallback(async values => {
+    const { title, body } = values;
 
-      try {
-        await putPost({
-          title,
-          body,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [putPost],
-  );
+    try {
+      await putPost({
+        title,
+        body,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const { status } = postPostResponse;
   const { status: putStatus } = putPostResponse;
-
 
   if (status === 1) {
     return <div>...Loading</div>;
   }
 
   if (status === 2 || putStatus === 2) {
-    const postID = post_id ? post_id: postPostResponse.data.id;
+    const postID = post_id ? post_id : postPostResponse.response.data.id;
     return <Redirect to={`/posts/${postID}`} />;
   }
 
-  const {
-    status: getStatus,
-    response,
-  } = getPostResponse;
+  const { status: getStatus, response } = getPostResponse;
 
   return (
     <Formik
-     enableReinitialize
+      enableReinitialize
       initialValues={{
-        title: (post_id && getStatus === 2) ? response.data.title : '',
-        body: (post_id && getStatus === 2) ? response.data.body : '',
+        title: post_id && getStatus === 2 ? response.data.title : '',
+        body: post_id && getStatus === 2 ? response.data.body : '',
       }}
       onSubmit={post_id ? editPost : addPost}
     >
