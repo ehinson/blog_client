@@ -49,7 +49,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
   });
   const { response: putPostResponse, request: putPost } = useAxios({
     method: 'put',
-    url: `/posts`,
+    url: `/posts/${post_id}`,
     withAuth: true,
   });
 
@@ -67,7 +67,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
 
     fetchData();
   }, [getPost, getPostResponse]);
-  console.log('get', getPostResponse);
+  console.log('put', putPostResponse);
 
   const addPost = useCallback(
     async values => {
@@ -102,13 +102,16 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
   );
 
   const { status } = postPostResponse;
+  const { status: putStatus } = putPostResponse;
+
 
   if (status === 1) {
     return <div>...Loading</div>;
   }
 
-  if (status === 2) {
-    return <Redirect to="/" />;
+  if (status === 2 || putStatus === 2) {
+    const postID = post_id ? post_id: postPostResponse.data.id;
+    return <Redirect to={`/posts/${postID}`} />;
   }
 
   const {
