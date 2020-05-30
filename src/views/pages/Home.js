@@ -13,7 +13,6 @@ const Home = props => {
     method: 'get',
     url: `/posts`,
   });
-  useEffect(() => {}, [getPosts]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,8 +35,12 @@ const Home = props => {
             <div>{item.title}</div>
             <div>{item.body}</div>
             <div>{item.author.username}</div>
+            {item.author.id === current_user.id && (
+              <Link to={`/posts/${item.id}/edit`}>Edit Post</Link>
+            )}
           </>
         ))}
+      {current_user.id && <Link to={`/posts/add`}>Create Your Own Post</Link>}
     </div>
   );
 };

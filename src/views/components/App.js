@@ -178,9 +178,9 @@ const App = () => {
                 <Route path="/login">
                   <Login />
                 </Route>
-                <PrivateRoute path="/users/:id/posts/:post_id/edit" component={AddEditPost} />
-                <PrivateRoute path="/users/:id/posts/add" component={AddEditPost} />
-                <Route path="/users/:id/posts/:post_id" component={SinglePost} />
+                <PrivateRoute path="/posts/:post_id/edit" component={AddEditPost} />
+                <PrivateRoute path="/posts/add" component={AddEditPost} />
+                <Route path="/posts/:post_id" component={SinglePost} />
                 <PrivateRoute path="/users/:id/edit" component={EditProfile} />
                 <Route path="/users/:id/" component={UserProfile} />
                 <Route path="*" component={NotFound} />
