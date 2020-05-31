@@ -4,6 +4,7 @@ import { UserContext, AuthContext } from 'views/components/App';
 import { useAxios } from 'state/hooks/useAxios';
 
 import { useHistory, Link } from 'react-router-dom';
+import Dangerous from '../components/Dangerous';
 
 const Home = props => {
   const {
@@ -33,14 +34,22 @@ const Home = props => {
         getPostResponse.response.data.items.map(item => (
           <>
             <div>{item.title}</div>
-            <div>{item.body}</div>
-            <div><Link to={`/users/${item.author.id}`}>{item.author.username}</Link></div>
-            {current_user && item.author.id === current_user.id && (<div>
-              <Link to={`/posts/${item.id}/edit`}>Edit Post</Link></div>
+            <div>
+              <Dangerous data={item.body} />
+            </div>
+            <div>
+              <Link to={`/users/${item.author.id}`}>{item.author.username}</Link>
+            </div>
+            {current_user && item.author.id === current_user.id && (
+              <div>
+                <Link to={`/posts/${item.id}/edit`}>Edit Post</Link>
+              </div>
             )}
           </>
         ))}
-      <div><Link to={`/posts/add`}>Create Your Own Post</Link></div>
+      <div>
+        <Link to={`/posts/add`}>Create Your Own Post</Link>
+      </div>
     </div>
   );
 };

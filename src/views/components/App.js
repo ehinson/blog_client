@@ -74,7 +74,7 @@ const App = () => {
     authDispatch({ type: 'logout', payload: { authenticated: false, token: null, expires } });
   };
 
-  // edit Profile
+  // edit Profile only
   const handleUpdateCurrentUser = (user) => {
     const item = JSON.parse(window.localStorage.getItem('auth'));
     console.log(item);

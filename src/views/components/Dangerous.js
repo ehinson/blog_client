@@ -1,15 +1,12 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import sanitizeHtml from 'sanitize-html';
 
-const _Post = ({ item }) => {
+const Dangerous = ({ data }) => {
   return (
-    <>
-      <h5>{item.title}</h5>
       <p
         dangerouslySetInnerHTML={{
-          __html: sanitizeHtml(item.body, {
+          __html: sanitizeHtml(data, {
             allowedTags: ['b', 'i', 'em', 'strong', 'a'],
             allowedAttributes: {
               a: ['href', 'target'],
@@ -17,10 +14,9 @@ const _Post = ({ item }) => {
           }),
         }}
       />
-    </>
   );
 };
 
-_Post.propTypes = {};
+Dangerous.propTypes = {};
 
-export default _Post;
+export default Dangerous;

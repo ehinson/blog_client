@@ -5,6 +5,7 @@ import { UserContext, AuthContext } from 'views/components/App';
 import { useAxios } from 'state/hooks/useAxios';
 
 import { useHistory, Link, useParams } from 'react-router-dom';
+import Dangerous from '../components/Dangerous';
 
 const UserProfile = props => {
   const {
@@ -38,7 +39,9 @@ const UserProfile = props => {
         getUserPostResponse.response.data.items.map(item => (
           <>
             <div>{item.title}</div>
-            <div>{item.body}</div>
+            <div>
+              <Dangerous data={item.body} />
+            </div>
             {current_user.id === item.author_id && <Link to={`/posts/${item.id}/edit`}>Edit</Link>}
           </>
         ))}
