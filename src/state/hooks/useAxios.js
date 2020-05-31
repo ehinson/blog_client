@@ -73,26 +73,6 @@ export const useAxios = ({ method, url, withAuth = false, config }) => {
     [instance, dispatch],
   );
 
-  // console.log('blah', response);
  
   return { response, request };
 };
-
-
-/*
-So far I'm calling it like this:
-
-// inside component
-const { request: updatePost } = useAxios({
-    method: 'put',
-    url: `/posts/${post_id}`,
-    withAuth: true,
-  });
-  
-  // inside form submit
-  const foo = updatePost({
-            title: values.title,
-            body: values.body,
-          });
-  ...blah blah blah
-*/
