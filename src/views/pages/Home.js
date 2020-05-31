@@ -36,7 +36,7 @@ const Home = props => {
       with Home page
       {getPostResponse.status === 2 &&
         getPostResponse.response.data.items.map(item => (
-          <>
+          <section key={item.id}>
             <div>{item.title}</div>
             <div>
               <Dangerous data={item.body} />
@@ -49,7 +49,7 @@ const Home = props => {
                 <Link to={`/posts/${item.id}/edit`}>Edit Post</Link>
               </div>
             )}
-          </>
+          </section>
         ))}
       <div>
         <Link to={`/posts/add`}>Create Your Own Post</Link>
