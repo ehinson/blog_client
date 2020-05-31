@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useCallback } from 'react';
+import React, { useContext, useEffect, useCallback , useState} from 'react';
 
 import { UserContext, AuthContext } from 'views/components/App';
 import { useAxios } from 'state/hooks/useAxios';
@@ -12,6 +12,7 @@ const UserProfile = props => {
     auth: { current_user },
   } = useContext(AuthContext);
   let { id: user_id } = useParams();
+  const [isFollowing, setIsFollowing] = useState(false)
   const { response: getUserPostResponse, request: getUserPosts } = useAxios({
     method: 'get',
     url: `/users/${user_id}/posts`,
@@ -23,10 +24,26 @@ const UserProfile = props => {
     withAuth: true,
   });
 
+  const { response: postFollowResponse, request: postFollow } = useAxios({
+    method: 'post',
+    url: `/follow/${user_id}`,
+    withAuth: true,
+  });
+
+  const { response: postUnfollowResponse, request: postUnfollow } = useAxios({
+    method: 'post',
+    url: `/unfollow/${user_id}`,
+    withAuth: true,
+  });
+
   useEffect(() => {
     const fetchUser = async () => {
       if (getUserResponse.status === 0) {
         await getUser();
+      }
+
+      if (getUserResponse.status === 2) {
+        setIsFollowing(getUserResponse.response.data.is_followed)
       }
     };
     const fetchPosts = async () => {
@@ -38,9 +55,20 @@ const UserProfile = props => {
     fetchUser();
     fetchPosts()
   }, [getUserPosts, getUserPostResponse, getUser, getUserResponse]);
-  console.log(getUserPostResponse, getUserResponse);
+
+  const handleFollowUnfollow  = async () => {
+    if (isFollowing) {
+      await postUnfollow()
+    } else {
+      await postFollow()
+
+    }
+    setIsFollowing(!isFollowing)
+  }
+  console.log(getUserPostResponse, getUserResponse, isFollowing);
   return (
     <div>
+      <button type="button" onClick={handleFollowUnfollow}>{isFollowing ? 'Unfollow' : 'follow'}</button>
       <img src={getUserResponse?.response?.data?._links.avatar} />
       User Profile: public view/ private view
       Followers: {getUserResponse?.response?.data?.follower_count}
