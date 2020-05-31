@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { required } from 'redux-form-validators';
 import React, { useContext, useCallback, useEffect } from 'react';
 import { createPost } from '../../../state/operations';
-import { UserContext, AuthContext, PostsContext } from '../../components/App';
+import { UserContext, AuthContext, PostsContext, NotificationsContext } from '../../components/App';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { useAxios } from 'state/hooks/useAxios';
 
@@ -31,14 +31,14 @@ const StyledButton = styled.button`
 `;
 
 const PostForm = ({ isSubmitting, handleSubmit }) => {
-  const { user, userDispatch } = useContext(UserContext);
-  const { auth, authDispatch } = useContext(AuthContext);
-  const { posts, handleAddPost } = useContext(PostsContext);
-  const { post_id } = useParams();
-  const history = useHistory();
+  const { notifications, handleAddNotification } = useContext(NotificationsContext);
   const {
     auth: { current_user },
   } = useContext(AuthContext);
+
+  const { post_id } = useParams();
+  const history = useHistory();
+
   const { response: postPostResponse, request: postPost } = useAxios({
     method: 'post',
     url: `/posts`,
@@ -76,11 +76,12 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
           title,
           body,
         });
+        handleAddNotification({ id: 1, message: 'This is a notification', type: 'success' });
       } catch (error) {
         console.log(error);
       }
     },
-    [postPost],
+    [handleAddNotification, postPost],
   );
 
   const editPost = useCallback(
@@ -92,11 +93,17 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
           title,
           body,
         });
+
+        handleAddNotification({
+          id: 2,
+          message: 'This is an edited notification',
+          type: 'success',
+        });
       } catch (error) {
         console.log(error);
       }
     },
-    [putPost],
+    [handleAddNotification, putPost],
   );
 
   const { status } = postPostResponse;

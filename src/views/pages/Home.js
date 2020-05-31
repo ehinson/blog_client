@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { UserContext, AuthContext } from 'views/components/App';
+import { UserContext, AuthContext, NotificationsContext } from 'views/components/App';
 import { useAxios } from 'state/hooks/useAxios';
 
 import { useHistory, Link } from 'react-router-dom';
@@ -10,9 +10,11 @@ const Home = props => {
   const {
     auth: { current_user, token, expires },
   } = useContext(AuthContext);
+  const { notifications, handleAddNotification } = useContext(NotificationsContext);
+
   const { response: getPostResponse, request: getPosts } = useAxios({
     method: 'get',
-    url: `/posts`,
+    url: `/posts?per_page=100`,
   });
 
   useEffect(() => {
@@ -25,8 +27,8 @@ const Home = props => {
     fetchData();
   }, [getPosts, getPostResponse]);
   console.log(getPostResponse);
+  // withAuth hook?
   const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
-
 
   return (
     <div>

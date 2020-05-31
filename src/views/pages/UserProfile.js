@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useCallback , useState} from 'react';
+import React, { useContext, useEffect, useCallback, useState } from 'react';
 
 import { UserContext, AuthContext } from 'views/components/App';
 import { useAxios } from 'state/hooks/useAxios';
@@ -12,7 +12,7 @@ const UserProfile = props => {
     auth: { current_user },
   } = useContext(AuthContext);
   let { id: user_id } = useParams();
-  const [isFollowing, setIsFollowing] = useState(false)
+  const [isFollowing, setIsFollowing] = useState(false);
   const { response: getUserPostResponse, request: getUserPosts } = useAxios({
     method: 'get',
     url: `/users/${user_id}/posts`,
@@ -43,7 +43,8 @@ const UserProfile = props => {
       }
 
       if (getUserResponse.status === 2) {
-        setIsFollowing(getUserResponse.response.data.is_followed)
+        setIsFollowing(getUserResponse.response.data.is_followed);
+        handleAddNotification({ id: 3, message: 'Followed', type: 'success' });
       }
     };
     const fetchPosts = async () => {
@@ -51,27 +52,32 @@ const UserProfile = props => {
         await getUserPosts();
       }
     };
-    
+
     fetchUser();
-    fetchPosts()
+    fetchPosts();
   }, [getUserPosts, getUserPostResponse, getUser, getUserResponse]);
 
-  const handleFollowUnfollow  = async () => {
-    if (isFollowing) {
-      await postUnfollow()
-    } else {
-      await postFollow()
-
+  const handleFollowUnfollow = async () => {
+    try {
+      if (isFollowing) {
+        await postUnfollow();
+      } else {
+        await postFollow();
+      }
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.log(error);
     }
-    setIsFollowing(!isFollowing)
-  }
+  };
   console.log(getUserPostResponse, getUserResponse, isFollowing);
   return (
     <div>
-      <button type="button" onClick={handleFollowUnfollow}>{isFollowing ? 'Unfollow' : 'follow'}</button>
+      <button type="button" onClick={handleFollowUnfollow}>
+        {isFollowing ? 'Unfollow' : 'follow'}
+      </button>
       <img src={getUserResponse?.response?.data?._links.avatar} />
-      User Profile: public view/ private view
-      Followers: {getUserResponse?.response?.data?.follower_count}
+      User Profile: public view/ private view Followers:{' '}
+      {getUserResponse?.response?.data?.follower_count}
       Following: {getUserResponse?.response?.data?.followed_count}
       Last Seen: {getUserResponse?.response?.data?.last_seen}
       {current_user && current_user.id === parseInt(user_id) && (
