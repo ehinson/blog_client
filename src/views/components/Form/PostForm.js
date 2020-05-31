@@ -8,9 +8,6 @@ import { UserContext, AuthContext, PostsContext } from '../../components/App';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { useAxios } from 'state/hooks/useAxios';
 
-import 'core-js';
-import 'regenerator-runtime';
-
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 
@@ -54,11 +51,10 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     withAuth: true,
   });
 
-    const { response: getPostResponse, request: getPost } = useAxios({
-      method: 'get',
-      url: `/posts/${post_id}`,
-    });
-  
+  const { response: getPostResponse, request: getPost } = useAxios({
+    method: 'get',
+    url: `/posts/${post_id}`,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +64,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     };
 
     fetchData();
-  }, [post_id]);
+  }, [getPost, getPostResponse.status, post_id]);
   console.log('put', putPostResponse);
 
   const addPost = useCallback(
@@ -87,18 +83,21 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     [postPost],
   );
 
-  const editPost = useCallback(async values => {
-    const { title, body } = values;
+  const editPost = useCallback(
+    async values => {
+      const { title, body } = values;
 
-    try {
-      await putPost({
-        title,
-        body,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+      try {
+        await putPost({
+          title,
+          body,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [putPost],
+  );
 
   const { status } = postPostResponse;
   const { status: putStatus } = putPostResponse;

@@ -26,6 +26,9 @@ const Navigation = props => {
       <ul>
         {is_anonymous ? (
           <>
+          <li>
+              <Link to="/">Home</Link>
+            </li>
             <li>
               <Link to="/login">Login</Link>
             </li>
@@ -35,9 +38,6 @@ const Navigation = props => {
           </>
         ) : (
           <>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
             <li>
               <button type="button" onClick={() => logoutUser(auth, handleLogout, useHistory)}>
                 Logout

@@ -8,7 +8,7 @@ import Dangerous from '../components/Dangerous';
 
 const Home = props => {
   const {
-    auth: { current_user },
+    auth: { current_user, token, expires },
   } = useContext(AuthContext);
   const { response: getPostResponse, request: getPosts } = useAxios({
     method: 'get',
@@ -25,6 +25,8 @@ const Home = props => {
     fetchData();
   }, [getPosts, getPostResponse]);
   console.log(getPostResponse);
+  const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
+
 
   return (
     <div>
@@ -40,7 +42,7 @@ const Home = props => {
             <div>
               <Link to={`/users/${item.author.id}`}>{item.author.username}</Link>
             </div>
-            {current_user && item.author.id === current_user.id && (
+            {!is_anonymous && item.author.id === current_user.id && (
               <div>
                 <Link to={`/posts/${item.id}/edit`}>Edit Post</Link>
               </div>

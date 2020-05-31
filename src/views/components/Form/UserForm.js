@@ -38,20 +38,18 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
     auth: { current_user },
   } = useContext(AuthContext);
   const history = useHistory();
-  const {id: user_id}  = useParams()
+  const { id: user_id } = useParams();
   const { response: putUserResponse, request: putUser } = useAxios({
     method: 'put',
     url: `/users/${user_id}`,
-    withAuth: true
+    withAuth: true,
   });
   const editUser = useCallback(
     async values => {
       const { username, about_me } = values;
 
       try {
-        await putUser(
-          {username, about_me},
-        );
+        await putUser({ username, about_me });
       } catch (error) {
         console.log(error);
       }
@@ -62,8 +60,8 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
   const { status, response } = putUserResponse;
 
   if (status === 2 && response.data) {
-    handleUpdateCurrentUser(response.data)
-    return <Redirect to={`/users/${user_id}`}/>
+    handleUpdateCurrentUser(response.data);
+    return <Redirect to={`/users/${user_id}`} />;
   }
   return (
     <Formik

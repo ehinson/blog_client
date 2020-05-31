@@ -7,9 +7,6 @@ import { useAxios } from 'state/hooks/useAxios';
 import { useHistory, Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 
-import 'core-js';
-import 'regenerator-runtime';
-
 import InputField from './InputField';
 
 const propTypes = {};
@@ -55,10 +52,8 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginForm = () => {
-  const {
-    handleLogin,
-    auth: { current_user },
-  } = useContext(AuthContext);
+  const { handleLogin, auth: { current_user, token, expires } } = useContext(AuthContext);
+  const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
   const history = useHistory();
   const { response: postTokenResponse, request: postToken } = useAxios({
     method: 'post',
@@ -102,7 +97,7 @@ const LoginForm = () => {
     }
   }
 
-  if (current_user || status === 2) {
+  if (!is_anonymous|| status === 2) {
     return <Redirect to="/" />;
   }
 

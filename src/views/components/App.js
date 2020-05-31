@@ -26,6 +26,7 @@ import UserProfile from 'views/pages/UserProfile';
 import EditProfile from 'views/pages/EditProfile';
 import AddEditPost from 'views/pages/AddEditPost';
 import SinglePost from 'views/pages/SinglePost';
+import Notification from 'views/components/Notification/Notification';
 
 const propTypes = {};
 
@@ -150,6 +151,7 @@ const App = () => {
           <NotificationsContext.Provider value={{ notifications, handleAddNotification }}>
             <GlobalStyle />
             <Router>
+              <Notification />
               <Navigation />
 
               <Switch>

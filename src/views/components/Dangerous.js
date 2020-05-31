@@ -4,16 +4,16 @@ import sanitizeHtml from 'sanitize-html';
 
 const Dangerous = ({ data }) => {
   return (
-      <p
-        dangerouslySetInnerHTML={{
-          __html: sanitizeHtml(data, {
-            allowedTags: ['b', 'i', 'em', 'strong', 'a'],
-            allowedAttributes: {
-              a: ['href', 'target'],
-            },
-          }),
-        }}
-      />
+    <p
+      dangerouslySetInnerHTML={{
+        __html: sanitizeHtml(data, {
+          allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+          allowedAttributes: {
+            a: ['href', 'target'],
+          },
+        }),
+      }}
+    />
   );
 };
 

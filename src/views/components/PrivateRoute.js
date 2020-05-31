@@ -10,15 +10,15 @@ const propTypes = {
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { user } = useContext(UserContext);
-  const { auth } = useContext(AuthContext);
-  console.log(auth);
+  const { auth: { current_user, token, expires } } = useContext(AuthContext);
+  const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
 
   return (
     <Route
       {...rest}
       render={props => {
-        return auth.token ? (
-          <Component auth={auth} {...props} />
+        return !is_anonymous ? (
+          <Component is_anonymous={is_anonymous} {...props} />
         ) : (
           <Redirect
             to={{
