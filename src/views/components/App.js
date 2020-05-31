@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useState, useCallback } from 'react';
+import React, { createContext, useReducer, useCallback } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,11 +18,9 @@ import Login from 'views/pages/Login';
 import Home from 'views/pages/Home';
 import NotFound from 'views/pages/NotFound';
 import PrivateRoute from './PrivateRoute';
-import { userReducer, authReducer, postsReducer } from 'state/reducers';
+import { userReducer, authReducer, postsReducer, notificationsReducer } from 'state/reducers';
 import { initialState } from 'state';
 import { useLocalStorage } from 'state/hooks/useLocalStorage';
-import { useAxios } from 'state/hooks/useAxios';
-import Post from './Posts/Post';
 import Navigation from 'views/components/Navigation/Navigation';
 import UserProfile from 'views/pages/UserProfile';
 import EditProfile from 'views/pages/EditProfile';
@@ -49,6 +47,7 @@ const GlobalStyle = createGlobalStyle`
 export const UserContext = createContext();
 export const AuthContext = createContext();
 export const PostsContext = createContext();
+export const NotificationsContext = createContext();
 
 const App = () => {
   const [user, userDispatch] = useReducer(userReducer, {
@@ -61,7 +60,12 @@ const App = () => {
   });
   const [auth, authDispatch] = useLocalStorage('auth', authReducer, initialState.auth);
 
-  console.log(auth, "auth")
+  const [notifications, notificationsDispatch] = useReducer(
+    notificationsReducer,
+    initialState.notifications,
+  );
+
+  console.log(auth, 'auth');
   // users/:id/posts
   const handleLogin = (token, user, expires) =>
     authDispatch({
@@ -75,7 +79,7 @@ const App = () => {
   };
 
   // edit Profile only
-  const handleUpdateCurrentUser = (user) => {
+  const handleUpdateCurrentUser = user => {
     const item = JSON.parse(window.localStorage.getItem('auth'));
     console.log(item);
     // really need to look at this for reg and login
@@ -84,40 +88,14 @@ const App = () => {
       window.localStorage.setItem(
         'auth',
         JSON.stringify({
-          authenticated: !!item.token,
-          token: item.token ? item.token : null,
+          authenticated: item && !!item.token,
+          token: item ? item.token : null,
           current_user: user,
           expires: item ? item.expires : null,
         }),
       );
     }
   };
-
-
-
-  // const { response: postTokenResponse, request: postToken } = useAxios({
-  //   method: 'post',
-  //   url: `/tokens`,
-  // });
-
-  // export const registerUser = async (values, userDispatch, history) => {
-  //   const { username, password, email } = values;
-
-  //   try {
-  //     const { data: user } = await axios.post(`/api/users`, {
-  //       username,
-  //       email,
-  //       password,
-  //     });
-  //     console.log(user);
-  //     userDispatch(user); // transform user here
-
-  //     history.push('/login');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
 
   const handleAddPost = post => postsDispatch({ type: 'createPost', payload: { post } });
   const handleEditPost = post => postsDispatch({ type: 'updatePost', payload: { post } });
@@ -144,6 +122,9 @@ const App = () => {
     [],
   );
 
+  const handleAddNotification = notification =>
+    notificationsDispatch({ type: 'addNotification', payload: notification });
+
   return (
     <AuthContext.Provider value={{ auth, handleLogin, handleLogout, handleUpdateCurrentUser }}>
       <UserContext.Provider
@@ -166,7 +147,7 @@ const App = () => {
             handleFetchPosts,
           }}
         >
-          <div>
+          <NotificationsContext.Provider value={{ notifications, handleAddNotification }}>
             <GlobalStyle />
             <Router>
               <Navigation />
@@ -187,7 +168,7 @@ const App = () => {
                 <Route path="*" component={NotFound} />
               </Switch>
             </Router>
-          </div>
+          </NotificationsContext.Provider>
         </PostsContext.Provider>
       </UserContext.Provider>
     </AuthContext.Provider>

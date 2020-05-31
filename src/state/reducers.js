@@ -68,3 +68,14 @@ export const postsReducer = (state, action) => {
       return state;
   }
 };
+
+export const notificationsReducer = (state, action) => {
+  switch (action.type) {
+    case 'addNotification':
+      return { ...action.payload };
+    case 'removeNotification':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+};
