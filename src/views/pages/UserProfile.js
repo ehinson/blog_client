@@ -17,20 +17,35 @@ const UserProfile = props => {
     url: `/users/${user_id}/posts`,
     withAuth: true,
   });
+  const { response: getUserResponse, request: getUser } = useAxios({
+    method: 'get',
+    url: `/users/${user_id}`,
+    withAuth: true,
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUser = async () => {
+      if (getUserResponse.status === 0) {
+        await getUser();
+      }
+    };
+    const fetchPosts = async () => {
       if (getUserPostResponse.status === 0) {
         await getUserPosts();
       }
     };
-
-    fetchData();
-  }, [getUserPosts, getUserPostResponse]);
-  console.log(getUserPostResponse);
+    
+    fetchUser();
+    fetchPosts()
+  }, [getUserPosts, getUserPostResponse, getUser, getUserResponse]);
+  console.log(getUserPostResponse, getUserResponse);
   return (
     <div>
+      <img src={getUserResponse?.response?.data?._links.avatar} />
       User Profile: public view/ private view
+      Followers: {getUserResponse?.response?.data?.follower_count}
+      Following: {getUserResponse?.response?.data?.followed_count}
+      Last Seen: {getUserResponse?.response?.data?.last_seen}
       {current_user && current_user.id === parseInt(user_id) && (
         <Link to={`/users/${user_id}/edit`}>Edit Profile</Link>
       )}
