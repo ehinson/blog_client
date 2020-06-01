@@ -26,7 +26,7 @@ const FileUpload = ({
   }, [file]);
 
   const handleRemoveImage = () => {
-    console.log('remove');
+    setFieldValue(field.name, '');
   };
   const handleChange = e => {
     if (!e.target.files) {

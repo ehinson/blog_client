@@ -93,14 +93,18 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
   const editPost = useCallback(
     async values => {
       const { title, body, postImage } = values;
+      let data = new FormData();
+      data.append('file', postImage);
+      data.append('title', title);
+      data.append('body', body);
 
       try {
-        await putPost({
-          title,
-          body,
-          file: postImage,
+        await putPost(data, {
+          onUploadProgress: p => {
+            setState({ ...state, progress: Math.round((p.loaded * 100) / p.total) });
+          },
         });
-
+        setState({ ...state, error: null, progress: -1 });
         handleAddNotification({
           id: 2,
           message: 'This is an edited notification',
@@ -110,7 +114,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
         console.log(error);
       }
     },
-    [handleAddNotification, putPost],
+    [handleAddNotification, putPost, state],
   );
 
   const { status } = postPostResponse;

@@ -32,6 +32,12 @@ const SinglePost = props => {
     fetchData();
   }, [getPost, getPostResponse]);
   console.log('get', getPostResponse);
+  let imageSrc = null;
+
+  if (getPostResponse?.response?.data?.image) {
+    let img = require(`images/${getPostResponse.response.data.image}`);
+    imageSrc = img ? img.default : null;
+  }
 
   if (getPostResponse.status === 1) {
     return <div>...Loading</div>;
@@ -43,10 +49,7 @@ const SinglePost = props => {
       {getPostResponse.status === 2 && (
         <>
           <div>
-            <ImagePreview
-              src={require(`images/${getPostResponse.response.data.image}`).default}
-              alt={getPostResponse.response.data.title}
-            />
+            {imageSrc && <ImagePreview src={imageSrc} alt={getPostResponse.response.data.title} />}
           </div>
 
           <div>{getPostResponse.response.data.title}</div>
