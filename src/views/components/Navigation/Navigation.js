@@ -23,9 +23,13 @@ const Navigation = props => {
 
   return (
     <nav>
+      <h1>Blg</h1>
       <ul>
         <li>
           <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/explore">Explore</Link>
         </li>
         {is_anonymous ? (
           <>

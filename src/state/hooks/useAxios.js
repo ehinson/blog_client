@@ -57,6 +57,7 @@ export const useAxios = ({ method, url, withAuth = false, config }) => {
         }
       : {},
   });
+  let token;
 
   //   instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -64,9 +65,18 @@ export const useAxios = ({ method, url, withAuth = false, config }) => {
     async (payload, config) => {
       dispatch({ type: 'pending' });
       try {
-        const result = await instance.request({ data: payload, ...config });
+        if(token){
+          // Cancel the previous request before making a new request
+          token.cancel()
+        }
+        // Create a new CancelToken
+        token = axios.CancelToken.source()
+        const result = await instance.request({ data: payload, ...config, cancelToken: token.token });
         dispatch({ type: 'success', payload: { result } });
       } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled', error.message);
+        } 
         dispatch({ type: 'failure', payload: { error } });
       }
     },

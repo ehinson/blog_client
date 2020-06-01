@@ -28,6 +28,7 @@ import AddEditPost from 'views/pages/AddEditPost';
 import SinglePost from 'views/pages/SinglePost';
 import Notification from 'views/components/Notification/Notification';
 import SearchPostForm from './Form/SearchPostForm';
+import SearchExplore from '../pages/SearchExplore';
 
 const propTypes = {};
 
@@ -37,12 +38,15 @@ const GlobalStyle = createGlobalStyle`
   body, html, #root {
     padding: 0;
     margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    display: flex;
+    font-family: 'Montserrat Alternates', sans-serif;
+        display: flex;
     height: 100%;
     min-height: 100vh;
     flex-direction: column;
     position: relative;
+  }
+  h1 {
+    font-family: 'Cedarville Cursive', cursive;
   }
 `;
 
@@ -168,7 +172,8 @@ const App = () => {
                 <Route path="/posts/:post_id" component={SinglePost} />
                 <PrivateRoute path="/users/:id/edit" component={EditProfile} />
                 <Route path="/users/:id/" component={UserProfile} />
-                <Route path="/search" component={SearchPostForm} />
+                <Route path="/search" component={SearchExplore} />
+                <Route path="/explore" component={SearchExplore} />
                 <Route path="*" component={NotFound} />
               </Switch>
             </Router>
