@@ -16,7 +16,7 @@ module.exports = {
     alias: {
       state: path.resolve(__dirname, 'src/state/'),
       views: path.resolve(__dirname, 'src/views/'),
-      images: path.resolve(__dirname, 'src/images/'),
+      images: path.resolve(__dirname, '../static/images/'),
     },
   },
   module: {
@@ -37,6 +37,9 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif)$/i,
         loader: 'file-loader',
+        options: {
+          outputPath: 'images',
+        },
       },
       {
         test: /\.html$/,
@@ -49,7 +52,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new ManifestPlugin(),
     new HtmlWebpackPlugin({
       template: 'src/index.html',

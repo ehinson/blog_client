@@ -4,6 +4,12 @@ import { useAxios } from 'state/hooks/useAxios';
 import { UserContext, AuthContext, PostsContext } from 'views/components/App';
 import { useHistory, useParams, Redirect, Link } from 'react-router-dom';
 import Dangerous from '../components/Dangerous';
+import styled from 'styled-components';
+
+const ImagePreview = styled.img`
+  max-width: 200px;
+  height: auto;
+`;
 
 const SinglePost = props => {
   const { post_id } = useParams();
@@ -36,8 +42,12 @@ const SinglePost = props => {
       Single Post page
       {getPostResponse.status === 2 && (
         <>
-          <img src={require(`images/${getPostResponse.response.data.image}`).default} />
-          <img src={`./src/images/adeolu-eletu-DqWEAOHsAvc-unsplash.jpg`} />
+          <div>
+            <ImagePreview
+              src={require(`images/${getPostResponse.response.data.image}`).default}
+              alt={getPostResponse.response.data.title}
+            />
+          </div>
 
           <div>{getPostResponse.response.data.title}</div>
           <div>

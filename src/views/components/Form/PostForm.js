@@ -1,7 +1,6 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
-import { required } from 'redux-form-validators';
 import React, { useContext, useCallback, useEffect, useState } from 'react';
 import { createPost } from '../../../state/operations';
 import { UserContext, AuthContext, PostsContext, NotificationsContext } from '../../components/App';
@@ -77,18 +76,18 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
       data.append('body', body);
       try {
         await postPost(data, {
-          onUploadProgress: (p) => {
+          onUploadProgress: p => {
             setState({ ...state, progress: Math.round((p.loaded * 100) / p.total) });
           },
         });
-        setState({...state, error: null, progress: -1})
+        setState({ ...state, error: null, progress: -1 });
         handleAddNotification({ id: 1, message: 'This is a notification', type: 'success' });
       } catch (error) {
-        setState({...state, error, progress: -1})
+        setState({ ...state, error, progress: -1 });
         console.log(error);
       }
     },
-    [handleAddNotification, postPost],
+    [handleAddNotification, postPost, state],
   );
 
   const editPost = useCallback(
@@ -118,7 +117,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
   const { status: putStatus } = putPostResponse;
 
   if (status === 1) {
-    return <progress value={state.progress} max={100} />
+    return <progress value={state.progress} max={100} />;
   }
 
   if (status === 2 || putStatus === 2) {
@@ -134,7 +133,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
       initialValues={{
         title: post_id && getStatus === 2 ? response.data.title : '',
         body: post_id && getStatus === 2 ? response.data.body : '',
-        postImage: post_id && getStatus === 2 ? response.data.image: ''
+        postImage: post_id && getStatus === 2 ? response.data.image : '',
       }}
       onSubmit={post_id ? editPost : addPost}
     >
@@ -163,6 +162,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
             label="Please enter an image"
             setState={setState}
             state={state}
+            isEdit={post_id}
           />
 
           <div>

@@ -88,7 +88,7 @@ const UserProfile = props => {
   console.log(getUserPostResponse, getUserResponse, isFollowing);
   return (
     <div>
-      {current_user && current_user.id !== parseInt(user_id) && (
+      {current_user && current_user.id !== parseInt(user_id, 10) && (
         <button type="button" onClick={handleFollowUnfollow}>
           {isFollowing ? 'Unfollow' : 'Follow'}
         </button>
@@ -100,7 +100,7 @@ const UserProfile = props => {
       {getUserResponse?.response?.data?.follower_count}
       Following: {getUserResponse?.response?.data?.followed_count}
       Last Seen: {getUserResponse?.response?.data?.last_seen}
-      {current_user && current_user.id === parseInt(user_id) && (
+      {current_user && current_user.id === parseInt(user_id, 10) && (
         <Link to={`/users/${user_id}/edit`}>Edit Profile</Link>
       )}
       <hr />
