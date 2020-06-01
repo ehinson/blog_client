@@ -1,13 +1,12 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 const ManifestPlugin = require('webpack-manifest-plugin');
-const Dotenv = require('dotenv-webpack');
 
 const path = require('path');
 
 module.exports = {
   entry: './src/index.js',
-  mode: 'development',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, '../dist'),
@@ -17,9 +16,9 @@ module.exports = {
     alias: {
       state: path.resolve(__dirname, 'src/state/'),
       views: path.resolve(__dirname, 'src/views/'),
+      images: path.resolve(__dirname, 'src/images/'),
     },
   },
-  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -38,10 +37,6 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif)$/i,
         loader: 'file-loader',
-        options: {
-          outputPath: path.resolve(__dirname, '../dist/images'),
-          publicPath: '',
-        },
       },
       {
         test: /\.html$/,
@@ -54,30 +49,11 @@ module.exports = {
     ],
   },
   plugins: [
-    new Dotenv(),
-    new CleanWebpackPlugin({
-      dry: true,
-      cleanAfterEveryBuildPatterns: ['**/*', '!index.html'],
-    }),
+    new CleanWebpackPlugin(),
     new ManifestPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/index.html'),
+      template: 'src/index.html',
       favicon: 'src/favicon.ico',
     }),
   ],
-  devServer: {
-    contentBase: path.join(__dirname, '../dist'),
-    compress: true,
-    port: 3030,
-    watchContentBase: true,
-    progress: true,
-    hot: true,
-    historyApiFallback: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        secure: false,
-      },
-    },
-  },
 };

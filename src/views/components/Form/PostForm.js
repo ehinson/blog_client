@@ -67,7 +67,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     fetchData();
   }, [getPost, getPostResponse.status, post_id]);
   console.log('put', putPostResponse);
-  const [state, setState] = useState({error: null, progress: -1})
+  const [state, setState] = useState({ error: null, progress: -1 });
   const addPost = useCallback(
     async values => {
       const { title, body, postImage } = values;
@@ -76,9 +76,15 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
       data.append('title', title);
       data.append('body', body);
       try {
-        await postPost(data);
+        await postPost(data, {
+          onUploadProgress: (p) => {
+            setState({ ...state, progress: Math.round((p.loaded * 100) / p.total) });
+          },
+        });
+        setState({...state, error: null, progress: -1})
         handleAddNotification({ id: 1, message: 'This is a notification', type: 'success' });
       } catch (error) {
+        setState({...state, error, progress: -1})
         console.log(error);
       }
     },
@@ -93,7 +99,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
         await putPost({
           title,
           body,
-          file: postImage
+          file: postImage,
         });
 
         handleAddNotification({
@@ -108,24 +114,11 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     [handleAddNotification, putPost],
   );
 
-  
-  // const handleChange = (e) => {
-  //   console.log("file change", e.target.files)
-  //   console.log(field, props);
-  //   const file = e.target.files[0]
-  //   setState({...FileUpload.state, file})
-
-  //   // creates a key/value pair
-  //   let data = new FormData();
-  //   data.append('file', file);
-  // }
-  // console.log(state)
-
   const { status } = postPostResponse;
   const { status: putStatus } = putPostResponse;
 
   if (status === 1) {
-    return <div>...Loading</div>;
+    return <progress value={state.progress} max={100} />
   }
 
   if (status === 2 || putStatus === 2) {
@@ -141,6 +134,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
       initialValues={{
         title: post_id && getStatus === 2 ? response.data.title : '',
         body: post_id && getStatus === 2 ? response.data.body : '',
+        postImage: post_id && getStatus === 2 ? response.data.image: ''
       }}
       onSubmit={post_id ? editPost : addPost}
     >

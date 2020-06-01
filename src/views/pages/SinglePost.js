@@ -36,6 +36,9 @@ const SinglePost = props => {
       Single Post page
       {getPostResponse.status === 2 && (
         <>
+          <img src={require(`images/${getPostResponse.response.data.image}`).default} />
+          <img src={`./src/images/adeolu-eletu-DqWEAOHsAvc-unsplash.jpg`} />
+
           <div>{getPostResponse.response.data.title}</div>
           <div>
             <Dangerous data={getPostResponse.response.data.body} />

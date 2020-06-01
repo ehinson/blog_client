@@ -52,7 +52,10 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginForm = () => {
-  const { handleLogin, auth: { current_user, token, expires } } = useContext(AuthContext);
+  const {
+    handleLogin,
+    auth: { current_user, token, expires },
+  } = useContext(AuthContext);
   const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
   const history = useHistory();
   const { response: postTokenResponse, request: postToken } = useAxios({
@@ -97,7 +100,7 @@ const LoginForm = () => {
     }
   }
 
-  if (!is_anonymous|| status === 2) {
+  if (!is_anonymous || status === 2) {
     return <Redirect to="/" />;
   }
 
