@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { UserContext, AuthContext } from 'views/containers/App';
+import { UserContext, AuthContext } from 'views/components/App';
 import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
@@ -24,6 +24,9 @@ const Navigation = props => {
   return (
     <nav>
       <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
         {is_anonymous ? (
           <>
             <li>
@@ -36,15 +39,12 @@ const Navigation = props => {
         ) : (
           <>
             <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
               <button type="button" onClick={() => logoutUser(auth, handleLogout, useHistory)}>
                 Logout
               </button>
             </li>
             <li>
-              <Link to={`/users/${current_user.id}`}>My Profile</Link>
+              <Link to={`/users/${current_user.id}`}>{current_user.username}'s Profile</Link>
             </li>
           </>
         )}

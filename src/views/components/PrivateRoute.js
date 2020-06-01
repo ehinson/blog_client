@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { array, node, oneOfType, string, bool, func, element } from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
-import { UserContext, AuthContext } from 'views/containers/App';
+import { UserContext, AuthContext } from '../components/App';
 
 const propTypes = {
   component: oneOfType([array, node, string, func, element]),
@@ -10,14 +10,15 @@ const propTypes = {
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { user } = useContext(UserContext);
-  const { auth } = useContext(AuthContext);
+  const { auth: { current_user, token, expires } } = useContext(AuthContext);
+  const is_anonymous = !current_user || !token || new Date(expires).getTime() <= Date.now();
 
   return (
     <Route
       {...rest}
       render={props => {
-        return auth.token ? (
-          <Component auth={auth} {...props} />
+        return !is_anonymous ? (
+          <Component is_anonymous={is_anonymous} {...props} />
         ) : (
           <Redirect
             to={{

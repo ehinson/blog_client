@@ -3,7 +3,7 @@ import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import { updateUser } from 'state/operations';
 import { UserContext, AuthContext, PostsContext } from 'views/components/App';
-import { useHistory, useParams, Redirect } from 'react-router-dom';
+import { useHistory, useParams, Redirect, Link } from 'react-router-dom';
 import React, { useContext, useCallback } from 'react';
 import { useAxios } from 'state/hooks/useAxios';
 import * as Yup from 'yup';
@@ -30,7 +30,7 @@ const StyledButton = styled.button`
   padding: 10px 15px;
 `;
 
-const UserForm = ({ isSubmitting, handleSubmit }) => {
+const SearchPostForm = ({ isSubmitting, handleSubmit }) => {
   const { user, handleEditUser } = useContext(UserContext);
   const { posts, handleAddPost } = useContext(PostsContext);
   const {
@@ -39,64 +39,59 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
   } = useContext(AuthContext);
   const history = useHistory();
   const { id: user_id } = useParams();
-  const { response: putUserResponse, request: putUser } = useAxios({
-    method: 'put',
-    url: `/users/${user_id}`,
+  const { response: searchPostsResponse, request: searchPosts } = useAxios({
+    method: 'get',
+    url: `/search`,
     withAuth: true,
   });
-  const editUser = useCallback(
+  const search = useCallback(
     async values => {
-      const { username, about_me } = values;
-
       try {
-        await putUser({ username, about_me });
+        await searchPosts(
+          {},
+          {
+            params: {
+              q: values.search,
+            },
+          },
+        );
       } catch (error) {
         console.log(error);
       }
     },
-    [putUser],
+    [searchPosts],
   );
-  console.log(putUserResponse);
-  const { status, response } = putUserResponse;
+  console.log(searchPostsResponse);
+  const { status, response } = searchPostsResponse;
 
-  if (status === 2 && response.data) {
-    handleUpdateCurrentUser(response.data);
-    return <Redirect to={`/users/${user_id}`} />;
-  }
   return (
     <Formik
       initialValues={{
         username: current_user?.username || '',
-        about_me: current_user?.about_me || '',
       }}
-      onSubmit={editUser}
+      onSubmit={search}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <StyledFormWrapper>
           <Field
-            name="username"
+            name="search"
             type="text"
             component={InputField}
-            placeholder="username"
-            label="Please enter a username"
-          />
-          <Field
-            name="about_me"
-            type="textarea"
-            component={TextAreaField}
-            placeholder="about_me"
-            label="What about you?"
+            placeholder="search"
+            label="Search..."
           />
           <div>
-            <StyledButton type="submit">Submit</StyledButton>
-            <StyledButton type="reset">Clear Values</StyledButton>
+            <StyledButton type="submit">Search</StyledButton>
+            <StyledButton type="reset">Reset</StyledButton>
           </div>
+          <p>{values.search}</p>
+          <div>{status === 2 && response.data.items.map(item => <Link to={`/posts/${item.id}`}>{item.title}</Link>)}</div>
         </StyledFormWrapper>
       )}
     </Formik>
   );
 };
 
-UserForm.propTypes = propTypes;
+SearchPostForm.propTypes = propTypes;
 
-export default UserForm;
+export default SearchPostForm;

@@ -1,8 +1,9 @@
 export const initialState = {
   posts: [],
   post: null,
-  notifications: null,
+  notifications: [],
   user: null,
+  users: null,
   messages: null,
   auth: {
     authenticated: null,

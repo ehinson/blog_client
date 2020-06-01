@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import 'core-js';
 import 'regenerator-runtime';
 
-import App from './views/containers/App';
+import App from './views/pages/App';
 import ErrorBoundary from './ErrorBoundary';
 
 const renderApp = () =>
