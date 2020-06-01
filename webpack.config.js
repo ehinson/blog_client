@@ -11,7 +11,7 @@ module.exports = {
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, '../dist'),
-    publicPath: '/',
+    publicPath: '',
   },
   resolve: {
     alias: {
@@ -36,8 +36,12 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader'],
+        test: /\.(png|jpe?g|gif)$/i,
+        loader: 'file-loader',
+        options: {
+          outputPath: path.resolve(__dirname, '../dist/images'),
+          publicPath: '',
+        },
       },
       {
         test: /\.html$/,

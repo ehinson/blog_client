@@ -172,7 +172,6 @@ const App = () => {
                 <Route path="/posts/:post_id" component={SinglePost} />
                 <PrivateRoute path="/users/:id/edit" component={EditProfile} />
                 <Route path="/users/:id/" component={UserProfile} />
-                <Route path="/search" component={SearchExplore} />
                 <Route path="/explore" component={SearchExplore} />
                 <Route path="*" component={NotFound} />
               </Switch>

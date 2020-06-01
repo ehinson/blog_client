@@ -2,7 +2,7 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import { required } from 'redux-form-validators';
-import React, { useContext, useCallback, useEffect } from 'react';
+import React, { useContext, useCallback, useEffect, useState } from 'react';
 import { createPost } from '../../../state/operations';
 import { UserContext, AuthContext, PostsContext, NotificationsContext } from '../../components/App';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { useAxios } from 'state/hooks/useAxios';
 
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
+import FileUpload from './FileUpload';
 
 const propTypes = {};
 
@@ -66,16 +67,16 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     fetchData();
   }, [getPost, getPostResponse.status, post_id]);
   console.log('put', putPostResponse);
-
+  const [state, setState] = useState({error: null, progress: -1})
   const addPost = useCallback(
     async values => {
-      const { title, body } = values;
-
+      const { title, body, postImage } = values;
+      let data = new FormData();
+      data.append('file', postImage);
+      data.append('title', title);
+      data.append('body', body);
       try {
-        await postPost({
-          title,
-          body,
-        });
+        await postPost(data);
         handleAddNotification({ id: 1, message: 'This is a notification', type: 'success' });
       } catch (error) {
         console.log(error);
@@ -86,12 +87,13 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
 
   const editPost = useCallback(
     async values => {
-      const { title, body } = values;
+      const { title, body, postImage } = values;
 
       try {
         await putPost({
           title,
           body,
+          file: postImage
         });
 
         handleAddNotification({
@@ -105,6 +107,19 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     },
     [handleAddNotification, putPost],
   );
+
+  
+  // const handleChange = (e) => {
+  //   console.log("file change", e.target.files)
+  //   console.log(field, props);
+  //   const file = e.target.files[0]
+  //   setState({...FileUpload.state, file})
+
+  //   // creates a key/value pair
+  //   let data = new FormData();
+  //   data.append('file', file);
+  // }
+  // console.log(state)
 
   const { status } = postPostResponse;
   const { status: putStatus } = putPostResponse;
@@ -129,8 +144,9 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
       }}
       onSubmit={post_id ? editPost : addPost}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <StyledFormWrapper>
+          {console.log(values)}
           <Field
             name="title"
             type="text"
@@ -145,6 +161,16 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
             placeholder="body"
             label="Please enter a email"
           />
+          <Field
+            name="postImage"
+            type="file"
+            component={FileUpload}
+            placeholder="post image"
+            label="Please enter an image"
+            setState={setState}
+            state={state}
+          />
+
           <div>
             <StyledButton type="submit">Submit</StyledButton>
             <StyledButton type="reset">Clear Values</StyledButton>
