@@ -27,6 +27,7 @@ import EditProfile from 'views/pages/EditProfile';
 import AddEditPost from 'views/pages/AddEditPost';
 import SinglePost from 'views/pages/SinglePost';
 import Notification from 'views/components/Notification/Notification';
+import SearchPostForm from './Form/SearchPostForm';
 
 const propTypes = {};
 
@@ -167,6 +168,7 @@ const App = () => {
                 <Route path="/posts/:post_id" component={SinglePost} />
                 <PrivateRoute path="/users/:id/edit" component={EditProfile} />
                 <Route path="/users/:id/" component={UserProfile} />
+                <Route path="/search" component={SearchPostForm} />
                 <Route path="*" component={NotFound} />
               </Switch>
             </Router>
