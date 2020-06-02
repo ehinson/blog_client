@@ -65,7 +65,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
 
     fetchData();
   }, [getPost, getPostResponse.status, post_id]);
-  console.log('put', putPostResponse);
+
   const [state, setState] = useState({ error: null, progress: -1 });
   const addPost = useCallback(
     async values => {
@@ -81,7 +81,11 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
           },
         });
         setState({ ...state, error: null, progress: -1 });
-        handleAddNotification({ id: 1, message: 'This is a notification', type: 'success' });
+        handleAddNotification({
+          id: 1,
+          message: 'This is an add post notification',
+          type: 'success',
+        });
       } catch (error) {
         setState({ ...state, error, progress: -1 });
         console.log(error);
@@ -94,7 +98,9 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
     async values => {
       const { title, body, postImage } = values;
       let data = new FormData();
-      data.append('file', postImage);
+      if (postImage) {
+        data.append('file', postImage);
+      }
       data.append('title', title);
       data.append('body', body);
 
@@ -107,11 +113,16 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
         setState({ ...state, error: null, progress: -1 });
         handleAddNotification({
           id: 2,
-          message: 'This is an edited notification',
+          message: 'This is an edited post notification',
           type: 'success',
         });
       } catch (error) {
         console.log(error);
+        handleAddNotification({
+          id: 4,
+          message: 'This is an edited post error notification',
+          type: 'error',
+        });
       }
     },
     [handleAddNotification, putPost, state],
@@ -166,7 +177,7 @@ const PostForm = ({ isSubmitting, handleSubmit }) => {
             label="Please enter an image"
             setState={setState}
             state={state}
-            isEdit={post_id}
+            isEdit={!!post_id}
           />
 
           <div>

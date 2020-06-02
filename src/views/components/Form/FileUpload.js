@@ -14,16 +14,14 @@ const FileUpload = ({
   type,
   placeholder,
   meta,
+  setState,
+  state,
+  isEdit,
   ...props
 }) => {
   let file;
-  useEffect(() => {
-    if (field.value) {
-      file = require(`./images${field.value}`).default;
-      var reader = new FileReader();
-      var url = reader.readAsDataURL(file);
-    }
-  }, [file]);
+  let img;
+  let imageSrc;
 
   const handleRemoveImage = () => {
     setFieldValue(field.name, '');
@@ -37,32 +35,31 @@ const FileUpload = ({
     var reader = new FileReader();
     var url = reader.readAsDataURL(e.target.files[0]);
     reader.onloadend = function(e) {
-      props.setState({
-        ...props.state,
+      setState({
+        ...state,
         file,
         imgSrc: [reader.result],
       });
       setFieldValue(field.name, file);
     };
-    console.log('url', url); // Would see a path?
   };
 
-  console.log(props.state);
-  console.log(field);
-
-  let imageSrc;
-  if (props.state.imgSrc) {
-    imageSrc = props.state.imgSrc;
-  } else if (props.isEdit && field.value) {
-    let img = require(`images/${field.value}`);
+  if (state.imgSrc) {
+    imageSrc = state.imgSrc;
+  } else if (isEdit && field.value) {
+    img = require(`images/${field.value}`);
     imageSrc = img ? img.default : null;
   }
+
+  console.log(state);
+  console.log(field);
+
   return (
     <div>
       <label>{label}</label>
       <div>
-        {!!field.value && props.state.progress === -1 && <ImagePreview src={imageSrc} />}
-        {props.state.progress > -1 && <progress value={props.state.progress} max={100} />}
+        {!!field.value && state.progress === -1 && <ImagePreview src={imageSrc} />}
+        {state.progress > -1 && <progress value={state.progress} max={100} />}
         {field.value && (
           <button type="button" onClick={handleRemoveImage}>
             Remove

@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useCallback, useState } from 'react';
+import styled from 'styled-components';
 
 import { UserContext, AuthContext, NotificationsContext } from 'views/components/App';
 import { useAxios } from 'state/hooks/useAxios';
 
 import { useHistory, Link, useParams } from 'react-router-dom';
 import Dangerous from '../components/Dangerous';
+
+const ImagePreview = styled.img`
+  max-width: 200px;
+  height: auto;
+`;
 
 const UserProfile = props => {
   const {
@@ -86,6 +92,13 @@ const UserProfile = props => {
     }
   };
   console.log(getUserPostResponse, getUserResponse, isFollowing);
+
+  let imageSrc = null;
+
+  if (getUserResponse?.response?.data?.image) {
+    let img = require(`images/${getUserResponse.response.data.image}`);
+    imageSrc = img ? img.default : null;
+  }
   return (
     <div>
       {current_user && current_user.id !== parseInt(user_id, 10) && (
@@ -93,7 +106,9 @@ const UserProfile = props => {
           {isFollowing ? 'Unfollow' : 'Follow'}
         </button>
       )}
-      <img src={getUserResponse?.response?.data?._links.avatar} />
+      <div>
+        {imageSrc && <ImagePreview src={imageSrc} alt={getUserResponse.response.data.title} />}
+      </div>
       User Profile: public view/ private view <br />
       {/* need to update this from postFollower response if we have it */}
       Followers:
@@ -111,7 +126,9 @@ const UserProfile = props => {
             <div>
               <Dangerous data={item.body} />
             </div>
-            {current_user.id === item.author_id && <Link to={`/posts/${item.id}/edit`}>Edit</Link>}
+            {current_user && current_user.id === item.author_id && (
+              <Link to={`/posts/${item.id}/edit`}>Edit</Link>
+            )}
           </section>
         ))}
     </div>

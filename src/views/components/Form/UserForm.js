@@ -2,14 +2,15 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 import { func, bool } from 'prop-types';
 import styled from 'styled-components';
 import { updateUser } from 'state/operations';
-import { UserContext, AuthContext, PostsContext } from 'views/components/App';
+import { UserContext, AuthContext, PostsContext, NotificationsContext } from 'views/components/App';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useState, useEffect } from 'react';
 import { useAxios } from 'state/hooks/useAxios';
 import * as Yup from 'yup';
 
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
+import FileUpload from './FileUpload';
 
 const propTypes = {};
 
@@ -33,6 +34,8 @@ const StyledButton = styled.button`
 const UserForm = ({ isSubmitting, handleSubmit }) => {
   const { user, handleEditUser } = useContext(UserContext);
   const { posts, handleAddPost } = useContext(PostsContext);
+  const { notifications, handleAddNotification } = useContext(NotificationsContext);
+
   const {
     handleUpdateCurrentUser,
     auth: { current_user },
@@ -44,35 +47,83 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
     url: `/users/${user_id}`,
     withAuth: true,
   });
+
+  const [state, setState] = useState({ error: null, progress: -1 });
+
   const editUser = useCallback(
     async values => {
-      const { username, about_me } = values;
+      const { username, about_me, userImage } = values;
+      console.log(state);
+      debugger;
+      let filename = '';
+
+      let data = new FormData();
+      if (userImage.name) {
+        data.append('file', userImage);
+        filename = userImage.name;
+      } else {
+        data.append('filename', userImage);
+        filename = userImage;
+      }
+      data.append('about_me', about_me);
+      data.append('username', username);
 
       try {
-        await putUser({ username, about_me });
+        await putUser(data, {
+          onUploadProgress: p => {
+            setState({ ...state, progress: Math.round((p.loaded * 100) / p.total) });
+          },
+        });
+        await setState({ ...state, error: null, progress: -1 });
+        await handleUpdateCurrentUser({
+          ...current_user,
+          about_me,
+          image: filename,
+          username,
+        });
+        debugger;
+        await handleAddNotification({
+          id: 5,
+          message: 'This is an edited user notification',
+          type: 'success',
+        });
+        await history.push(`/users/${user_id}`);
       } catch (error) {
         console.log(error);
+        handleAddNotification({
+          id: 6,
+          message: 'This is an edited user error notification',
+          type: 'error',
+        });
       }
     },
-    [putUser],
+    [
+      current_user,
+      handleAddNotification,
+      handleUpdateCurrentUser,
+      history,
+      putUser,
+      state,
+      user_id,
+    ],
   );
-  console.log(putUserResponse);
+
   const { status, response } = putUserResponse;
 
-  if (status === 2 && response.data) {
-    handleUpdateCurrentUser(response.data);
-    return <Redirect to={`/users/${user_id}`} />;
-  }
   return (
     <Formik
+      enableReinitialize
       initialValues={{
         username: current_user?.username || '',
         about_me: current_user?.about_me || '',
+        userImage: current_user?.image || '',
       }}
       onSubmit={editUser}
     >
       {({ isSubmitting }) => (
         <StyledFormWrapper>
+          {status === 1 && <progress value={state.progress} max={100} />}
+
           <Field
             name="username"
             type="text"
@@ -86,6 +137,16 @@ const UserForm = ({ isSubmitting, handleSubmit }) => {
             component={TextAreaField}
             placeholder="about_me"
             label="What about you?"
+          />
+          <Field
+            name="userImage"
+            type="file"
+            component={FileUpload}
+            placeholder="user image"
+            label="Please enter an image"
+            setState={setState}
+            state={state}
+            isEdit={!!user_id}
           />
           <div>
             <StyledButton type="submit">Submit</StyledButton>
